@@ -77,7 +77,7 @@ MIDDLEWARE = [
 ]
 
 DEBUG_TOOLBAR = False
-if DEBUG:
+if DEBUG and 0:
     DEBUG_TOOLBAR = True
     INTERNAL_IPS = ['127.0.0.1']
     INSTALLED_APPS.append('debug_toolbar')

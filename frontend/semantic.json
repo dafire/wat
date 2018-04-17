@@ -8,12 +8,12 @@
       "themes": "src/themes/"
     },
     "output": {
-      "packaged": "../../django/wat_ui/static/ui/semantic/",
-      "uncompressed": "../../django/wat_ui/static/ui/semantic/components/",
-      "compressed": "../../django/wat_ui/static/ui/semantic/components/",
-      "themes": "../../django/wat_ui/static/ui/semantic/themes/"
+      "packaged": "../../django/wot_ui/static/ui/semantic/",
+      "uncompressed": "../../django/wot_ui/static/ui/semantic/components/",
+      "compressed": "../../django/wot_ui/static/ui/semantic/components/",
+      "themes": "../../django/wot_ui/static/ui/semantic/themes/"
     },
-    "clean": "../../django/wat_ui/static/ui/semantic/"
+    "clean": "../../django/wot_ui/static/ui/semantic/"
   },
   "permission": false,
   "autoInstall": false,
@@ -23,7 +23,10 @@
     "reset",
     "site",
     "button",
+    "grid",
     "container",
-    "divider"
+    "menu",
+    "dropdown",
+    "table"
   ]
 }

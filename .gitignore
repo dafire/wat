@@ -1,3 +1,8 @@
+# Security related
+/config/codeship.aes
+/config/credentials.env
+/config/dockercfg
+
 # Mac files
 .DS_Store
 
@@ -8,7 +13,6 @@ __pycache__/
 
 # C extensions
 *.so
-
 
 # User-specific stuff
 .idea/**/workspace.xml
@@ -28,6 +32,3 @@ __pycache__/
 *.log
 /django/staticfiles
 /django/wot_ui/static/ui/semantic/components
-/config/codeship.aes
-/config/credentials.env
-/config/dockercfg
