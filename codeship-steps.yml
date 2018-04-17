@@ -1,3 +1,4 @@
-- name: example_tagged_step
-  service: wat
-  command: echo "Deploy here!"
+- service: wat
+  type: push
+  image_name: dafire/wat
+  encrypted_dockercfg_path: config/dockercfg.encrypted
