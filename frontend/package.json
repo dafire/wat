@@ -1,0 +1,9 @@
+{
+  "name": "frontend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "semantic-ui": "^2.3.1"
+  }
+}

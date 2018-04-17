@@ -1,0 +1,29 @@
+{
+  "base": "semantic/",
+  "paths": {
+    "source": {
+      "config": "src/theme.config",
+      "definitions": "src/definitions/",
+      "site": "src/site/",
+      "themes": "src/themes/"
+    },
+    "output": {
+      "packaged": "../../django/wat_ui/static/ui/semantic/",
+      "uncompressed": "../../django/wat_ui/static/ui/semantic/components/",
+      "compressed": "../../django/wat_ui/static/ui/semantic/components/",
+      "themes": "../../django/wat_ui/static/ui/semantic/themes/"
+    },
+    "clean": "../../django/wat_ui/static/ui/semantic/"
+  },
+  "permission": false,
+  "autoInstall": false,
+  "rtl": false,
+  "version": "2.3.1",
+  "components": [
+    "reset",
+    "site",
+    "button",
+    "container",
+    "divider"
+  ]
+}
