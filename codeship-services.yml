@@ -1,2 +1,11 @@
 wat:
-  build: .
+  build:
+    image: wat
+    dockerfile: Dockerfile
+  depends_on:
+    - redis
+    - postgres
+redis:
+  image: healthcheck/redis:alpine
+postgres:
+  image: healthcheck/postgres:alpine
