@@ -1,4 +1,11 @@
+prebuild:
+ image: yikaus/alpine-bash
+ volumes:
+    - .:/src
+
 wat:
   build:
     image: dafire/wat
     dockerfile: Dockerfile
+  volumes_from:
+     - prebuild
