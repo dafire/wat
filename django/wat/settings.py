@@ -17,6 +17,8 @@ import environ
 env = environ.Env()
 root = environ.Path(__file__) - 2
 
+env.read_env(root('../config/default.env'))
+
 if sys.argv[0][-9:] == "manage.py" or sys.argv[0][-10:] == "console.py":
     env.read_env(root('../config/manage.py.env'))
     MANAGE_COMMAND = True
@@ -180,6 +182,10 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_PRELOAD = True
 
+PROJECT_VERSION = env.str("PROJECT_VERSION", default=None)
+
+print("PROJECT_VERSION ist:", PROJECT_VERSION)
+
 RAVEN_URL = env.str("RAVEN_URL", default=None)
 if RAVEN_URL:
     RAVEN_CONFIG = {
@@ -188,6 +194,8 @@ if RAVEN_URL:
         # release based on the git info.
         # 'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
     }
+    if PROJECT_VERSION:
+        RAVEN_CONFIG['release'] = PROJECT_VERSION
 
 CELERY_BROKER_URL = env.str("REDIS_URL", default="redis://127.0.0.1/0")
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

@@ -1,7 +1,7 @@
 # Security related
-/config/codeship.aes
 /config/credentials.env
 /config/dockercfg
+/codeship.aes
 
 # Mac files
 .DS_Store
