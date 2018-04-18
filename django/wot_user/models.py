@@ -1,7 +1,16 @@
 import uuid
+from django.contrib.auth.base_user import BaseUserManager
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_wot_user(self, wot_account_id, wot_nickname=""):
+        wot_account_id = int(wot_account_id)
+        self.create(username="wot_%d" % wot_account_id, account_id=wot_account_id, nickname=wot_nickname)
 
 
 class User(AbstractUser):
@@ -12,8 +21,13 @@ class User(AbstractUser):
     last_login = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    objects = UserManager()
+
     def __str__(self):
-        return "<User '%s'>" % self.nickname
+        if len(self.nickname):
+            return self.nickname
+        else:
+            return self.username
 
 
 class AuthToken(models.Model):

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table class="ui collapsing celled table">
+        <thead>
+        <tr>
+            <th>Rang</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <td>{{ object.role_i18n }}</td>
+                <td>
+                    <a href="{% url "wot_index:player" pk=object.account.pk %}">{{ object.account.nickname }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

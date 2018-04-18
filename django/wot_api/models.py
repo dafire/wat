@@ -1,6 +1,27 @@
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models.signals import post_save
+
+from wot_user.models import User
+
+
+class UserInfo(models.Model):
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        to_field="account_id",
+        swappable=True
+    )
+    data = JSONField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "<UserInfo %r (%r)>" % (self.account, self.created)
+
+    class Meta:
+        get_latest_by = "created"
 
 
 class Clan(models.Model):
@@ -30,19 +51,15 @@ class ClanInfo(models.Model):
     updated = models.DateTimeField()
 
     def __str__(self):
-        return "<ClanInfo '%r'>" % self.account
+        return "<ClanInfo '%r'>" % self.account_id
 
 
-class UserInfo(models.Model):
-    account = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.DO_NOTHING,
-        db_constraint=False,
-        to_field="account_id",
-        swappable=True
-    )
-    data = JSONField()
-    created = models.DateTimeField(auto_now_add=True)
+def create_account_if_needed(sender, instance: ClanInfo, created, **_kwargs):
+    if created:
+        try:
+            instance.account
+        except User.DoesNotExist:
+            User.objects.create_wot_user(wot_account_id=instance.account_id)
 
-    def __str__(self):
-        return "<UserInfo %r (%r)>" % (self.account, self.created)
+
+post_save.connect(create_account_if_needed, sender=ClanInfo)

@@ -17,10 +17,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
-from wot_ui import views
-
 urlpatterns = [
-    path('', views.index),
     path('auth/', include('wot_user.urls')),
     path('test/', include('wat_test.urls')),
     path('admin/', admin.site.urls),

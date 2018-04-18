@@ -23,8 +23,9 @@
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/django/wat_ui/templates" />
         <option value="$MODULE_DIR$/django/wot_admin_tools/templates" />
+        <option value="$MODULE_DIR$/django/wot_index/templates" />
+        <option value="$MODULE_DIR$/django/wot_ui/templates" />
       </list>
     </option>
   </component>
