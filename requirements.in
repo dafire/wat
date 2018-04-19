@@ -1,16 +1,17 @@
 ipython
 
-django
-psycopg2-binary
+
 celery
 honcho
-uwsgi
-brotlipy
-whitenoise
+
 raven
 
 requests
 
+psycopg2-binary
+pgcli
+
+django
 django-extensions
 django-debug-toolbar
 django-celery-beat
@@ -19,6 +20,10 @@ django-redis
 
 redis
 hiredis
+
+uwsgi
+brotlipy
+whitenoise
 
 funcy
 
