@@ -8,5 +8,5 @@
 
 - service: nginx
   type: push
-  image_name: ddafire/wat-nginx
+  image_name: dafire/wat-nginx
   encrypted_dockercfg_path: config/dockercfg.encrypted
