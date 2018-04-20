@@ -6,5 +6,6 @@ app_name = "wot_index"
 
 urlpatterns = [
     path('', views.ClanView.as_view(), name="index"),
-    path('p/<uuid:pk>/', views.PlayerView.as_view(), name='player')
+    path('p/<uuid:pk>/', views.PlayerView.as_view(), name='player'),
+    path('u/<int:pk>/', views.UserInfoView.as_view(), name='userinfo')
 ]

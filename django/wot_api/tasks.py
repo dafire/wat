@@ -5,18 +5,34 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
-from wot_api.models import ClanInfo, UserInfo
+from wot_api.models import ClanInfo, UserInfo, VehicleStatistic, VehicleStatisticItem
 from wot_user.models import User
 from . import wot_api
 
 
 @celery.task()
-def update_userinfo(account_id, min_age=3600):
-    print("update", account_id)
+def update_vehicles(account_id):
+    data = wot_api.vehicle_statistics(account_id=account_id)
+
+    with transaction.atomic():
+        stats = VehicleStatistic.objects.create(account_id=account_id)
+
+        for tank in data:
+            vehicle = VehicleStatisticItem(statistic_call=stats)
+            for s in ['clan', 'stronghold_skirmish', 'regular_team', 'account_id', 'max_xp',
+                      'company', 'all', 'stronghold_defense', 'max_frags', 'team', 'globalmap', 'frags',
+                      'mark_of_mastery', 'in_garage', 'tank_id']:
+                setattr(vehicle, s, tank.get(s))
+            vehicle.save()
+
+
+@celery.task()
+def update_userinfo(account_id, min_age=10800):
     last_data = UserInfo.objects.filter(account_id=account_id).order_by("created").last()
-    if last_data and last_data.created + timedelta(seconds=3000) > timezone.now():
-        print(account_id, "data recent enough")
+    if last_data and last_data.created + timedelta(seconds=min_age) > timezone.now():
         return
+
+    update_vehicles.delay(account_id)
 
     data = wot_api.players_personal_data(account_id)
 
@@ -34,7 +50,7 @@ def update_userinfo(account_id, min_age=3600):
         if len(dirty):
             user.save(update_fields=dirty)
     except User.DoesNotExist:
-        pass
+        User.objects.create_wot_user(wot_account_id=account_id, wot_nickname=data.get("nickname"))
 
 
 @celery.task()

@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {{ object }}
+  {{ object }}
+
+  <table>
+    {% for user_info in user_info_list %}
+      <tr>
+      <td>{{ user_info.created|date:'d.m.Y H:i' }}</td>
+        <td><a href="{% url "wot_index:userinfo" pk=user_info.pk %}">{{ user_info.pk }}</a></td>
+        <td>{{ user_info }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+
 {% endblock %}

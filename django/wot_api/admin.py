@@ -22,3 +22,8 @@ class UserInfoAdmin(admin.ModelAdmin):
 
     readonly_fields = list_display + ["data"]
     pass
+
+
+@admin.register(models.VehicleStatistic)
+class VehicleStatisticAdmin(admin.ModelAdmin):
+    list_display = ["account", "created"]

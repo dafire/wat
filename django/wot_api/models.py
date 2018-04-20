@@ -24,6 +24,44 @@ class UserInfo(models.Model):
         get_latest_by = "created"
 
 
+class Vehicle(models.Model):
+    pass
+
+
+class VehicleStatistic(models.Model):
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        to_field="account_id",
+        swappable=True
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+
+class VehicleStatisticItem(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    statistic_call = models.ForeignKey(VehicleStatistic, on_delete=models.CASCADE)
+
+    tank_id = models.IntegerField()
+
+    max_xp = models.IntegerField()
+    max_frags = models.IntegerField()
+
+    mark_of_mastery = models.SmallIntegerField()
+
+    clan = JSONField()
+    stronghold_skirmish = JSONField()
+    regular_team = JSONField()
+
+    team = JSONField()
+    globalmap = JSONField()
+    company = JSONField()
+    stronghold_defense = JSONField()
+    all = JSONField()
+
+
 class Clan(models.Model):
     name = models.CharField(max_length=100)
     updated = models.DateTimeField(auto_now=True)

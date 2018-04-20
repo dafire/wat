@@ -1,3 +1,4 @@
+import hashlib
 from pprint import pprint
 
 from django.conf import settings
@@ -16,7 +17,9 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
     if not data:
         data = {}
 
-    cache_key = hash(url + str(frozenset(data.items())))
+    cache_key = hashlib.md5(url.encode("utf-8") + bytes(str(frozenset(data.items())), "utf-8")).hexdigest()
+
+    print("h", url + str(frozenset(data.items())), cache_key)
 
     if not disable_cache:
         cached_data = cache.get(cache_key)
@@ -54,4 +57,9 @@ def players_personal_data(account_id, access_token=None):
 
 def get_clan_details(clan_id, access_token=None):
     data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn").get(str(clan_id))
+    return data
+
+
+def vehicle_statistics(account_id):
+    data = get_request("tanks", "stats", {"account_id": account_id}).get(str(account_id))
     return data

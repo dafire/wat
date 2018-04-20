@@ -113,7 +113,8 @@ DATABASES = {
     'default': env.db(default="postgres://postgres:postgres@localhost/postgres"),
 }
 
-CONN_MAX_AGE = 600
+if not DEBUG:
+    CONN_MAX_AGE = 600
 
 # Caches
 
