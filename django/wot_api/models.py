@@ -25,7 +25,25 @@ class UserInfo(models.Model):
 
 
 class Vehicle(models.Model):
-    pass
+    tank_id = models.IntegerField(primary_key=True)
+
+    name = models.CharField(max_length=200)
+    short_name = models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
+
+    nation = models.CharField(max_length=200)
+    tier = models.SmallIntegerField()
+
+    description = models.TextField()
+
+    tag = models.CharField(max_length=200)
+    is_premium = models.BooleanField()
+    is_gift = models.BooleanField()
+    images = JSONField()
+
+    price_credit = models.IntegerField(null=True)
+    price_gold = models.IntegerField(null=True)
+
 
 
 class VehicleStatistic(models.Model):

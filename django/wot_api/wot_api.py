@@ -17,9 +17,7 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
     if not data:
         data = {}
 
-    cache_key = hashlib.md5(url.encode("utf-8") + bytes(str(frozenset(data.items())), "utf-8")).hexdigest()
-
-    print("h", url + str(frozenset(data.items())), cache_key)
+    cache_key = "api_" + hashlib.md5(url.encode("utf-8") + bytes(str(frozenset(data.items())), "utf-8")).hexdigest()
 
     if not disable_cache:
         cached_data = cache.get(cache_key)
@@ -43,8 +41,8 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
 
     if data.get("status") == "ok":
         if not disable_cache:
-            cache.set(cache_key, data["data"], CACHE_TIME)
-        return data["data"]
+            cache.set(cache_key, data, CACHE_TIME)
+        return data
 
     pprint(data)
     raise Exception("wot not ok :(")
@@ -52,14 +50,31 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
 
 def players_personal_data(account_id, access_token=None):
     data = get_request("account", "info", {"account_id": account_id}).get(str(account_id))
-    return data
+    return data.get("data")
 
 
 def get_clan_details(clan_id, access_token=None):
     data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn").get(str(clan_id))
-    return data
+    return data.get("data")
 
 
 def vehicle_statistics(account_id):
     data = get_request("tanks", "stats", {"account_id": account_id}).get(str(account_id))
-    return data
+    return data.get("data")
+
+
+def vehicles():
+    data = get_request("encyclopedia", "vehicles")
+    return data.get("data")
+    # looks like the api always returns all fields for now
+    #
+    # vehicles_data = data.get("data")
+    # meta = data.get("meta", {})
+    # pages = meta.get("page_total", 0)
+    # if meta.get("page_total", 0 > 1):
+    #     for page in range(2, pages):
+    #         data = get_request("encyclopedia", "vehicles", {"page_no": page})
+    #         vehicles_data.update(data.get("data"))
+    #         print(len(vehicles_data))
+    # print(len(vehicles_data))
+    # return vehicles_data

@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from django.views.generic import TemplateView, DetailView
 
 from wot_api import models
@@ -18,6 +16,7 @@ class ClanView(TemplateView):
             .order_by("account__nickname") \
             .all()
 
+        update_vehicles()
         return data
 
 
