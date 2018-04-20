@@ -9,3 +9,8 @@ wat:
     dockerfile: Dockerfile
   volumes_from:
      - prebuild
+
+nginx:
+  build:
+    image: dafire/wat-nginx
+    dockerfile: Dockerfile.nginx

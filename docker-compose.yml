@@ -9,13 +9,28 @@ services:
      image: redis:3.2.6-alpine
      ports:
       - "6379:6379"
-  web:
+  uwsgi:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
+    # command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - ./django:/code
     ports:
-      - "8000:8000"
+      - "3000:3000"
+    environment:
+      DEBUG: 1
+      SECRET_KEY: test_key
+      REDIS_URL: "redis://redis:6379/0"
+      DATABASE_URL: "postgres://postgres:postgres@db/postgres"
+      ALLOWED_HOSTS: "*"
+      PROJECT_TITLE: "TEST"
     depends_on:
       - db
       - redis
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - uwsgi

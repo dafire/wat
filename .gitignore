@@ -32,3 +32,4 @@ __pycache__/
 *.log
 /django/staticfiles
 /django/wot_ui/static/ui/semantic/components
+.idea/markdown-navigator*

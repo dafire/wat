@@ -1,0 +1,4 @@
+FROM nginx:1.13
+#RUN curl -L -O https://github.com/nginxinc/nginx-amplify-agent/raw/master/packages/install.sh
+#RUN API_KEY='xxx' sh ./install.sh
+COPY config/nginx.conf /etc/nginx/conf.d/default.conf

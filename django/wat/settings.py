@@ -184,8 +184,6 @@ if not DEBUG:
 
 PROJECT_VERSION = env.str("PROJECT_VERSION", default=None)
 
-print("PROJECT_VERSION ist:", PROJECT_VERSION)
-
 RAVEN_URL = env.str("RAVEN_URL", default=None)
 if RAVEN_URL:
     RAVEN_CONFIG = {

@@ -1,11 +1,12 @@
 - service: prebuild
   command: /src/config/version-info.sh
 
-- service: prebuild
-  command: cat src/config/default.env
-
-
 - service: wat
   type: push
   image_name: dafire/wat
+  encrypted_dockercfg_path: config/dockercfg.encrypted
+
+- service: nginx
+  type: push
+  image_name: ddafire/wat-nginx
   encrypted_dockercfg_path: config/dockercfg.encrypted

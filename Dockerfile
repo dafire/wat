@@ -12,4 +12,5 @@ RUN rm -rf wat_ui/static/ui/semantic/components;\
     useradd -ms /bin/bash code;\
     chown code /code
 USER code
+EXPOSE 3000
 CMD ["/config/entrypoint.sh"]
