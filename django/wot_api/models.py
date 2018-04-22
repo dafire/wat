@@ -44,6 +44,8 @@ class Vehicle(models.Model):
     price_credit = models.IntegerField(null=True)
     price_gold = models.IntegerField(null=True)
 
+    def __str__(self):
+        return "<Vehicle (%d) %s>" % (self.tank_id, self.name)
 
 
 class VehicleStatistic(models.Model):
@@ -62,7 +64,9 @@ class VehicleStatisticItem(models.Model):
 
     statistic_call = models.ForeignKey(VehicleStatistic, on_delete=models.CASCADE)
 
-    tank_id = models.IntegerField()
+    vehicle = models.ForeignKey(Vehicle,
+                                db_constraint=False,
+                                on_delete=models.DO_NOTHING)
 
     max_xp = models.IntegerField()
     max_frags = models.IntegerField()
@@ -78,6 +82,9 @@ class VehicleStatisticItem(models.Model):
     company = JSONField()
     stronghold_defense = JSONField()
     all = JSONField()
+
+    def __str__(self):
+        return "<VehicleStatsId (%r)>" % (self.vehicle_id,)
 
 
 class Clan(models.Model):
@@ -108,6 +115,31 @@ class ClanInfo(models.Model):
 
     def __str__(self):
         return "<ClanInfo '%r'>" % self.account_id
+
+
+class KVStore(models.Model):
+    key = models.CharField(max_length=50, primary_key=True)
+    value = models.CharField(max_length=255)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "<KVStore %r: %r>" % (self.key, self.value)
+
+
+class ExpectedWN8Values(models.Model):
+    vehicle = models.OneToOneField(Vehicle,
+                                   db_constraint=False,
+                                   primary_key=True,
+                                   on_delete=models.DO_NOTHING,
+                                   related_name="expected")
+    exp_damage = models.FloatField()
+    exp_def = models.FloatField()
+    exp_frag = models.FloatField()
+    exp_spot = models.FloatField()
+    exp_win_rate = models.FloatField()
+
+    def __str__(self):
+        return "<ExpectedWN8 Vehicle:%r>" % (self.vehicle_id,)
 
 
 def create_account_if_needed(sender, instance: ClanInfo, created, **_kwargs):

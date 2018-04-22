@@ -15,6 +15,9 @@
                 <td>
                     <a href="{% url "wot_index:player" pk=object.account.pk %}">{{ object.account.nickname }}</a>
                 </td>
+                <td>
+                    <a href="{% url "wot_index:wn8" pk=object.account.pk %}">wn8</a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

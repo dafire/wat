@@ -1,11 +1,13 @@
-from datetime import datetime, timedelta
-
 import celery
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
+from pprint import pprint
+from requests import get
 
-from wot_api.models import ClanInfo, UserInfo, VehicleStatistic, VehicleStatisticItem, Vehicle
+from wot_api.models import ClanInfo, UserInfo, VehicleStatistic, VehicleStatisticItem, Vehicle, ExpectedWN8Values, \
+    KVStore
 from wot_user.models import User
 from . import wot_api
 
@@ -105,3 +107,19 @@ def update_clan(clan_id, do_update_userinfo=False):
 def update_default_clan():
     print("update default clan")
     update_clan(settings.WOT_CLAN, do_update_userinfo=True)
+
+
+def update_expected_values_wn8():
+    data = get("https://static.modxvm.com/wn8-data-exp/json/wn8exp.json").json()
+
+    with transaction.atomic():
+        ExpectedWN8Values.objects.all().delete()
+        for row in data.get("data"):
+            ExpectedWN8Values.objects.create(vehicle_id=row.get("IDNum"),
+                                             exp_damage=row.get("expDamage"),
+                                             exp_def=row.get("expDef"),
+                                             exp_frag=row.get("expFrag"),
+                                             exp_spot=row.get("expSpot"),
+                                             exp_win_rate=row.get("expWinRate"))
+        KVStore.objects.update_or_create(key="expected_values_wn8",
+                                         defaults={"value": data.get("header").get("version")})

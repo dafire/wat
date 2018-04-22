@@ -10,7 +10,6 @@ class ClanAdmin(admin.ModelAdmin):
 
 @admin.register(models.ClanInfo)
 class ClanInfoAdmin(admin.ModelAdmin):
-    pass
     list_display = ["pk", "account_id", "clan_id", "updated"]
 
     readonly_fields = list_display + ["account", "clan"]
@@ -21,7 +20,6 @@ class UserInfoAdmin(admin.ModelAdmin):
     list_display = ["account", "created"]
 
     readonly_fields = list_display + ["data"]
-    pass
 
 
 @admin.register(models.VehicleStatistic)

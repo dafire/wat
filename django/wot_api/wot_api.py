@@ -1,14 +1,29 @@
 import hashlib
-from pprint import pprint
-
 from django.conf import settings
 from django.core.cache import cache
+from pprint import pprint
 from requests import post
 
 if settings.DEBUG:
-    CACHE_TIME = 900
+    CACHE_TIME = 1800
 else:
     CACHE_TIME = 30
+
+
+class WOTApiException(Exception):
+    def __init__(self, details=None):
+        self.details = details
+
+    def __str__(self):
+        return repr(self.details)
+
+
+class WOTInvalidIPAddressException(WOTApiException):
+    def __init__(self, ipaddress):
+        self.ipaddress = ipaddress
+
+    def __str__(self):
+        return "IP: " + repr(self.ipaddress)
 
 
 def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
@@ -44,23 +59,30 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
             cache.set(cache_key, data, CACHE_TIME)
         return data
 
+    if data.get("status") == "error":
+        error = data.get("error", {})
+        if error.get("code") == 407:
+            raise WOTInvalidIPAddressException(ipaddress=error.get("value"))
+
+        raise WOTApiException(error)
+
     pprint(data)
-    raise Exception("wot not ok :(")
+    raise WOTApiException("wot not ok :(")
 
 
 def players_personal_data(account_id, access_token=None):
-    data = get_request("account", "info", {"account_id": account_id}).get(str(account_id))
-    return data.get("data")
+    data = get_request("account", "info", {"account_id": account_id})
+    return data.get("data").get(str(account_id))
 
 
 def get_clan_details(clan_id, access_token=None):
-    data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn").get(str(clan_id))
-    return data.get("data")
+    data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn")
+    return data.get("data").get(str(clan_id))
 
 
 def vehicle_statistics(account_id):
-    data = get_request("tanks", "stats", {"account_id": account_id}).get(str(account_id))
-    return data.get("data")
+    data = get_request("tanks", "stats", {"account_id": account_id})
+    return data.get("data").get(str(account_id))
 
 
 def vehicles():
