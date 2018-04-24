@@ -1,46 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {{ object }}
-    <hr>
-    {{ summary }}
-    <hr>
+  <h2>{{ object }} <small>{{ wn8|floatformat:0 }}</small></h2>
+  <hr>
+  {{ created }}
+  <hr>
 
-    <table class="ui celled table">
-        <thead>
+  <table class="ui celled table">
+    <thead>
+      <tr>
+        <th>Tank</th>
+        <th>Battles</th>
+        <th>Winrate (expected)</th>
+        <th>Damage (expected)</th>
+        <th>Frags (expected)</th>
+        <th>Spotted (expected)</th>
+        <th>Deffed (expected)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in vehicles_stats %}
         <tr>
-            <th>Tank</th>
-            <th>Battles</th>
-            <th>Winrate (expected)</th>
-            <th>Damage (expected)</th>
-            <th>Spotted (expected)</th>
-            <th>Deffed (expected)</th>
+          <td>{{ s.vehicle.name }}</td>
+          <td>{{ s.all.battles }}</td>
+          <td>
+            {{ s.winrate|floatformat:2 }}
+            ({{ s.vehicle.expected.exp_win_rate|floatformat:2 }})
+          </td>
+          <td>
+            {{ s.damage|floatformat:0 }}
+            ({{ s.vehicle.expected.exp_damage|floatformat:0 }})
+          </td>
+          <td>
+            {{ s.frag|floatformat:2 }}
+            ({{ s.vehicle.expected.exp_frag|floatformat:2 }})
+          </td>
+          <td>
+            {{ s.spotted|floatformat:2 }}
+            ({{ s.vehicle.expected.exp_spot|floatformat:2 }})
+          </td>
+          <td>
+            {{ s.deffed|floatformat:2 }}
+            ({{ s.vehicle.expected.exp_def|floatformat:2 }})
+          </td>
+          <td>{{ s.wn8|floatformat:2 }}</td>
         </tr>
-        </thead>
-        <tbody>
-        {% for s in vehicles_stats %}
-            <tr>
-                <td>{{ s.vehicle.name }}</td>
-                <td>{{ s.all.battles }}</td>
-                <td>
-                    {{ s.winrate|floatformat:2 }}
-                    ({{ s.vehicle.expected.exp_win_rate|floatformat:2 }})
-                </td>
-                <td>
-                    {{ s.damage|floatformat:0 }}
-                    ({{ s.vehicle.expected.exp_damage|floatformat:0 }})
-                </td>
-                <td>
-                    {{ s.spotted|floatformat:2 }}
-                    ({{ s.vehicle.expected.exp_spot|floatformat:2 }})
-                </td>
-                <td>
-                    {{ s.deffed|floatformat:2 }}
-                    ({{ s.vehicle.expected.exp_def|floatformat:2 }})
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock %}

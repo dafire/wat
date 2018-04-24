@@ -1,9 +1,9 @@
-import celery
 from datetime import datetime, timedelta
+
+import celery
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from pprint import pprint
 from requests import get
 
 from wot_api.models import ClanInfo, UserInfo, VehicleStatistic, VehicleStatisticItem, Vehicle, ExpectedWN8Values, \
@@ -50,8 +50,9 @@ def update_vehicle_statistic(account_id):
             vehicle = VehicleStatisticItem(statistic_call=stats)
             for s in ['clan', 'stronghold_skirmish', 'regular_team', 'account_id', 'max_xp',
                       'company', 'all', 'stronghold_defense', 'max_frags', 'team', 'globalmap', 'frags',
-                      'mark_of_mastery', 'in_garage', 'tank_id']:
+                      'mark_of_mastery', 'in_garage']:
                 setattr(vehicle, s, tank.get(s))
+            vehicle.vehicle_id = tank.get("tank_id")
             vehicle.save()
 
 
@@ -109,6 +110,7 @@ def update_default_clan():
     update_clan(settings.WOT_CLAN, do_update_userinfo=True)
 
 
+@celery.task()
 def update_expected_values_wn8():
     data = get("https://static.modxvm.com/wn8-data-exp/json/wn8exp.json").json()
 
@@ -123,3 +125,9 @@ def update_expected_values_wn8():
                                              exp_win_rate=row.get("expWinRate"))
         KVStore.objects.update_or_create(key="expected_values_wn8",
                                          defaults={"value": data.get("header").get("version")})
+
+
+@celery.task()
+def update_xvm_scales():
+    data = get("https://static.modxvm.com/xvmscales.json").json()
+
