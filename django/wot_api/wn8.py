@@ -9,10 +9,10 @@ def calculate_wn8(stats: VehicleStatisticItem, expected: ExpectedWN8Values = Non
         expected = stats.vehicle.expected
 
     rWIN = winrate / expected.exp_win_rate
-    rDAMAGE = stats.all.get("damage_dealt") / expected.exp_damage
-    rSPOT = stats.all.get("spotted") / expected.exp_spot
-    rFRAG = stats.all.get("frags") / expected.exp_frag
-    rDEF = stats.all.get("dropped_capture_points") / expected.exp_def
+    rDAMAGE = stats.all.get("damage_dealt") / battles / expected.exp_damage
+    rSPOT = stats.all.get("spotted") / battles / expected.exp_spot
+    rFRAG = stats.all.get("frags") / battles / expected.exp_frag
+    rDEF = stats.all.get("dropped_capture_points") / battles / expected.exp_def
 
     rWINc = max(0, (rWIN - 0.71) / (1 - 0.71))
     rDAMAGEc = max(0, (rDAMAGE - 0.22) / (1 - 0.22))

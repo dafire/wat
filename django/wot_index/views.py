@@ -50,7 +50,7 @@ class WN8View(DetailView):
         data["created"] = vehiclestatistics.created
 
         expDamage = expSpot = expDEF = expFRAG = expWIN = 0
-        sDamage = sSpot = sDEF = sFRAG = sWIN = 0
+        sBattles = sDamage = sSpot = sDEF = sFRAG = sWIN = 0
 
         stats = VehicleStatisticItem.objects \
             .filter(statistic_call=vehiclestatistics) \
@@ -60,20 +60,26 @@ class WN8View(DetailView):
         for s in stats:
             # print(s.vehicle_id)
             battles = s.all.get("battles")
+            sBattles += battles
             expDamage += s.vehicle.expected.exp_damage * battles
+            sDamage += s.all.get("damage_dealt")
             s.damage = s.all.get("damage_dealt") / battles
 
             expSpot += s.vehicle.expected.exp_spot * battles
             s.spotted = s.all.get("spotted") / battles
+            sSpot += s.all.get("spotted")
 
             expFRAG += s.vehicle.expected.exp_frag * battles
             s.frag = s.all.get("frags") / battles
+            sFRAG += s.all.get("frags")
 
             expDEF += s.vehicle.expected.exp_def * battles
             s.deffed = s.all.get("dropped_capture_points") / battles
+            sDEF += s.all.get("dropped_capture_points")
 
-            expWIN += s.vehicle.expected.exp_win_rate * battles
+            expWIN += 0.01 * s.vehicle.expected.exp_win_rate * battles
             s.winrate = s.all.get("wins") / battles * 100
+            sWIN += s.all.get("wins")
 
             s.wn8 = calculate_wn8(s)
 
