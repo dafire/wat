@@ -209,3 +209,61 @@ WOT_ADMIN_USERS = env.list("WOT_ADMIN_USERS", default=[])
 WOT_CLAN = env.int("WOT_CLAN", default=None)
 
 PROJECT_TITLE = env.str("PROJECT_TITLE", default="HelloWorld")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(module)12s %(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {'custom-tag': 'logging'},
+            'formatter': 'verbose',
+        },
+        'sentry_info': {
+            'level': 'INFO',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {'custom-tag': 'logging'},
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django.security.DisallowedHost': {
+            'handlers': ['console', 'sentry'],
+            'level': 'CRITICAL',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console', 'sentry'],
+            'propagate': True,
+        },
+        'hummel': {
+            'handlers': ['console', 'sentry_info'],
+            'level': 'INFO',
+        },
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        }
+    }
+}
