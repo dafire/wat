@@ -3,3 +3,4 @@ exclude_patterns:
  - "**/migrations/*.py"
  - "/frontend/**"
  - "/config/**"
+ - "/django/wot_ui/static/ui/semantic/**"
