@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>{{ object }} <small>{{ wn8|floatformat:0 }}</small></h2>
+  <h2>{{ object }}
+    <small>{{ wn8.wn8|floatformat:0 }}</small>
+  </h2>
   <hr>
   {{ created }}
   <hr>
@@ -19,31 +21,31 @@
       </tr>
     </thead>
     <tbody>
-      {% for s in vehicles_stats %}
+      {% for s,d in wn8.vehicles.items %}
         <tr>
-          <td>{{ s.vehicle.name }}</td>
-          <td>{{ s.all.battles }}</td>
+          <td>{{ d.name }}</td>
+          <td>{{ d.battles }}</td>
           <td>
-            {{ s.winrate|floatformat:2 }}
-            ({{ s.vehicle.expected.exp_win_rate|floatformat:2 }})
+            {{ d.winrate|floatformat:0 }}
+            ({{ d.expected_winrate|floatformat:0 }})
           </td>
           <td>
-            {{ s.damage|floatformat:0 }}
-            ({{ s.vehicle.expected.exp_damage|floatformat:0 }})
+            {{ d.average_damage_done|floatformat:0 }}
+            ({{ d.expected_damage_done|floatformat:0 }})
           </td>
           <td>
-            {{ s.frag|floatformat:2 }}
-            ({{ s.vehicle.expected.exp_frag|floatformat:2 }})
+            {{ d.average_fragged|floatformat:2 }}
+            ({{ d.expected_fragged|floatformat:2 }})
           </td>
           <td>
-            {{ s.spotted|floatformat:2 }}
-            ({{ s.vehicle.expected.exp_spot|floatformat:2 }})
+            {{ d.average_spotted|floatformat:2 }}
+            ({{ d.expected_spotted|floatformat:2 }})
           </td>
           <td>
-            {{ s.deffed|floatformat:2 }}
-            ({{ s.vehicle.expected.exp_def|floatformat:2 }})
+            {{ d.average_deffed|floatformat:2 }}
+            ({{ d.expected_deffed|floatformat:2 }})
           </td>
-          <td>{{ s.wn8|floatformat:2 }}</td>
+          <td>{{ d.wn8|floatformat:2 }}</td>
         </tr>
       {% endfor %}
     </tbody>

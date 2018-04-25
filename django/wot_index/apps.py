@@ -11,6 +11,5 @@ class WotIndexConfig(AppConfig):
         try:
             reverse("%s:index" % self.name)
         except NoReverseMatch:
-            print("ADD")
             urlconf_module = import_module(settings.ROOT_URLCONF)
             urlconf_module.urlpatterns = [path('', include(self.name + ".urls"))] + urlconf_module.urlpatterns

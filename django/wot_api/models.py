@@ -15,10 +15,12 @@ class UserInfo(models.Model):
         swappable=True
     )
     data = JSONField()
+    first_of_day = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "<UserInfo %r (%r)>" % (self.account, self.created)
+        return "<UserInfo %r (%r)>" % (self.account, str(self.created))
 
     class Meta:
         get_latest_by = "created"
@@ -56,6 +58,7 @@ class VehicleStatistic(models.Model):
         to_field="account_id",
         swappable=True
     )
+    first_of_day = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
 

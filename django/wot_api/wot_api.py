@@ -4,11 +4,7 @@ from django.core.cache import cache
 from pprint import pprint
 from requests import post
 
-if settings.DEBUG:
-    CACHE_TIME = 1800
-else:
-    CACHE_TIME = 30
-
+CACHE_TIME = 60
 
 class WOTApiException(Exception):
     def __init__(self, details=None):
@@ -37,10 +33,9 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
     if not disable_cache:
         cached_data = cache.get(cache_key)
         if cached_data:
-            print("CACHED")
+            print("CACHED DATA FROM WGAPI")
             return cached_data
 
-        print("NOT CACHED")
     token = settings.WARGAMING_TOKEN
     if token:
         data["application_id"] = token
