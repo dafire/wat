@@ -49,6 +49,7 @@ class WN8View(DetailView):
 
         data["created"] = vehiclestatistics.created
 
+        # TODO: FIXME: nur felder abrufen die auch gebraucht werden... das sind eine menge daten!
         stats = VehicleStatisticItem.objects \
             .filter(statistic_call=vehiclestatistics) \
             .select_related("vehicle", "vehicle__expected") \
