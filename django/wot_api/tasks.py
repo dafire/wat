@@ -81,7 +81,7 @@ def update_vehicles():
 @celery.task()
 def update_default_clan():
     print("update default clan")
-    update_clan(settings.WOT_CLAN, do_update_userinfo=True)
+    update_clan(settings.WOT_CLAN)
 
 
 @celery.task()
