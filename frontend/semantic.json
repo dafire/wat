@@ -27,6 +27,9 @@
     "container",
     "menu",
     "dropdown",
-    "table"
+    "segment",
+    "table",
+    "accordion",
+    "icon"
   ]
 }

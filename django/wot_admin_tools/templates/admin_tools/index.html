@@ -1,7 +1,74 @@
 {% extends "base.html" %}
 
+{% load static %}
+
+{% block head %}
+    <script type="application/javascript" src="{% static "index/button.js" %}"></script>
+{% endblock %}
+
 {% block content %}
 
-  <a href="?update_default_clan=1" class="ui button">Update Default</a>
-
+    <div data-task-url="{% url "wot_admin_tools:task-url" %}">
+        <div class="ui raised segment">
+            <button data-task="update_clan" class="ui primary button">Update Clan</button>
+            <button data-task="update_vehicles" class="ui button">Update Vehicles</button>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test2" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.ui clearing segment'
+                only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test3" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test4" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test5" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test6" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test7" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test8" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test9" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+        <div class="ui clearing raised segment">
+            <button data-task="test10" class="ui right floated primary button">Loading</button>
+            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
+                aligned
+                as indicated in your original question. But 'ui right floated primary button' works.</p>
+        </div>
+    </div>
 {% endblock %}
