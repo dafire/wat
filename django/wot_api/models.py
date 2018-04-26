@@ -58,6 +58,8 @@ class VehicleStatistic(models.Model):
         to_field="account_id",
         swappable=True
     )
+    data = JSONField()
+    userinfo = models.ForeignKey(UserInfo, null=True, on_delete=models.SET_NULL)
     first_of_day = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 

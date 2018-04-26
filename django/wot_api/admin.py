@@ -17,7 +17,7 @@ class ClanInfoAdmin(admin.ModelAdmin):
 
 @admin.register(models.UserInfo)
 class UserInfoAdmin(admin.ModelAdmin):
-    list_display = ["account", "created"]
+    list_display = ["account", "first_of_day", "created", "updated"]
 
     readonly_fields = list_display + ["data"]
 

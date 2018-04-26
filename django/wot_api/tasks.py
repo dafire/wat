@@ -25,8 +25,8 @@ class TaskType:
     CLAN = "clan"
 
 
-def update_vehicle_statistic(account_id):
-    _wot_api_update.delay(task_type=TaskType.VEHICLE_STATISTIC, account_id=account_id)
+def update_vehicle_statistic(account_id, userinfo_id=None):
+    _wot_api_update.delay(task_type=TaskType.VEHICLE_STATISTIC, account_id=account_id, userinfo_id=userinfo_id)
 
 
 def update_userinfo(account_id):
@@ -106,11 +106,11 @@ def update_xvm_scales():
     data = get("https://static.modxvm.com/xvmscales.json").json()
 
 
-def _update_vehicle_statistic(account_id):
+def _update_vehicle_statistic(account_id, userinfo_id):
     last_data = VehicleStatistic.objects.filter(account_id=account_id).order_by("created").last()
 
     first_of_day = False
-    if not last_data or last_data.created < timezone.now().replace(hour=5, minute=0, second=0, microsecond=0):
+    if not last_data or last_data.created < last_start_of_day():
         first_of_day = True
 
     logger.info("update_vehicle_statistic account: %d (first_of_day:%r)", account_id, first_of_day)
@@ -118,7 +118,8 @@ def _update_vehicle_statistic(account_id):
     data = wot_api.vehicle_statistics(account_id=account_id)
 
     with transaction.atomic():
-        stats = VehicleStatistic.objects.create(account_id=account_id, first_of_day=first_of_day)
+        stats = VehicleStatistic.objects.create(account_id=account_id, first_of_day=first_of_day,
+                                                userinfo_id=userinfo_id, data=data)
 
         for tank in data:
             vehicle = VehicleStatisticItem(statistic_call=stats)
@@ -130,11 +131,21 @@ def _update_vehicle_statistic(account_id):
             vehicle.save()
 
 
+def last_start_of_day(point=None):
+    if not point:
+        point = timezone.now()
+    if point.hour < 5:
+        point -= timedelta(days=1)
+
+    return point.replace(hour=5, minute=0, second=0, microsecond=0)
+
+
 def _update_userinfo(account_id):
     last_data = UserInfo.objects.filter(account_id=account_id).order_by("created").last()
 
+    do_vehicle_stats_update = False
     first_of_day = False
-    if not last_data or last_data.created < timezone.now().replace(hour=5, minute=0, second=0, microsecond=0):
+    if not last_data or last_data.created < last_start_of_day():
         first_of_day = True
 
     logger.info("update_userinfo account: %d (first_of_day:%r)", account_id, first_of_day)
@@ -142,7 +153,7 @@ def _update_userinfo(account_id):
     data = wot_api.players_personal_data(account_id)
 
     if first_of_day:
-        update_vehicle_statistic(account_id)
+        do_vehicle_stats_update = True
     else:
         if last_data.data.get("updated_at") == data.get("updated_at"):
             last_data.updated = timezone.now()
@@ -150,11 +161,12 @@ def _update_userinfo(account_id):
             logger.info("update_userinfo account: %d : DATA NOT CHANGED", account_id)
             return
         if last_data.data.get("last_battle_time") != data.get("last_battle_time"):
-            update_vehicle_statistic(account_id)
-            logger.info("update_userinfo account: %d UPDATING VEHICLEDATA", account_id)
+            do_vehicle_stats_update = True
 
-    UserInfo.objects.create(account_id=account_id, data=data, first_of_day=first_of_day)
+    userinfo, created = UserInfo.objects.create(account_id=account_id, data=data, first_of_day=first_of_day)
 
+    if do_vehicle_stats_update:
+        update_vehicle_statistic(account_id, userinfo.pk)
     try:
         dirty = []
         user = User.objects.get(account_id=account_id)
