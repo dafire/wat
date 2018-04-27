@@ -1,5 +1,3 @@
-from time import sleep
-
 from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
@@ -7,9 +5,9 @@ from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
-from pprint import pprint
 
 from wot_api import tasks
+from wot_api.models import KVStore
 
 
 class SuperUserRequiredMixin(AccessMixin):
@@ -26,18 +24,20 @@ class SuperUserRequiredMixin(AccessMixin):
 class IndexView(SuperUserRequiredMixin, TemplateView):
     template_name = "admin_tools/index.html"
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data["wn8_exp_date"] = KVStore.objects.value("expected_values_wn8")
+        return data
 
-class TaskViewClass(View):
+
+class TaskViewClass(SuperUserRequiredMixin, View):
     def post(self, request):
         task_type = request.POST.get("type")
-
-        pprint(request.POST)
 
         if task_type == "button":
             task = "button_%s" % request.POST.get("task", "_unknown")
             func = getattr(self, task, None)
             if not func:
-                sleep(2)
                 text = " ERROR"
                 if settings.DEBUG:
                     text += " (function '%s' not found)" % task
@@ -55,6 +55,14 @@ class TaskViewClass(View):
 
 
 class TaskView(TaskViewClass):
+
+    def button_update_known_users(self, request):
+        tasks.update_known_users()
+        return {}
+
+    def button_update_expected_values(self, request):
+        tasks.update_expected_values_wn8()
+        return {}
 
     def button_update_clan(self, request):
         tasks.update_default_clan()

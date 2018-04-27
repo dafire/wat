@@ -110,7 +110,7 @@ def _update_vehicle_statistic(account_id, userinfo_id):
     last_data = VehicleStatistic.objects.filter(account_id=account_id).order_by("created").last()
 
     first_of_day = False
-    if not last_data or last_data.created < last_start_of_day():
+    if not last_data or last_data.created < _last_start_of_day():
         first_of_day = True
 
     logger.info("update_vehicle_statistic account: %d (first_of_day:%r)", account_id, first_of_day)
@@ -131,7 +131,7 @@ def _update_vehicle_statistic(account_id, userinfo_id):
             vehicle.save()
 
 
-def last_start_of_day(point=None):
+def _last_start_of_day(point=None):
     if not point:
         point = timezone.now()
     if point.hour < 5:
@@ -145,7 +145,7 @@ def _update_userinfo(account_id):
 
     do_vehicle_stats_update = False
     first_of_day = False
-    if not last_data or last_data.created < last_start_of_day():
+    if not last_data or last_data.created < _last_start_of_day():
         first_of_day = True
 
     logger.info("update_userinfo account: %d (first_of_day:%r)", account_id, first_of_day)
@@ -163,7 +163,7 @@ def _update_userinfo(account_id):
         if last_data.data.get("last_battle_time") != data.get("last_battle_time"):
             do_vehicle_stats_update = True
 
-    userinfo, created = UserInfo.objects.create(account_id=account_id, data=data, first_of_day=first_of_day)
+    userinfo = UserInfo.objects.create(account_id=account_id, data=data, first_of_day=first_of_day)
 
     if do_vehicle_stats_update:
         update_vehicle_statistic(account_id, userinfo.pk)

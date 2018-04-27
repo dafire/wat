@@ -122,10 +122,19 @@ class ClanInfo(models.Model):
         return "<ClanInfo '%r'>" % self.account_id
 
 
+class KVStoreManager(models.Manager):
+    def value(self, key):
+        values = self.filter(key=key).values_list("value", flat=True)
+        if len(values):
+            return values[0]
+
+
 class KVStore(models.Model):
     key = models.CharField(max_length=50, primary_key=True)
     value = models.CharField(max_length=255)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = KVStoreManager()
 
     def __str__(self):
         return "<KVStore %r: %r>" % (self.key, self.value)

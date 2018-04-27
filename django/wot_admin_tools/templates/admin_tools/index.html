@@ -10,18 +10,17 @@
 
     <div data-task-url="{% url "wot_admin_tools:task-url" %}">
         <div class="ui raised segment">
-            <button data-task="update_clan" class="ui primary button">Update Clan</button>
+            <button data-task="update_clan" class="ui button">Update Clan</button>
             <button data-task="update_vehicles" class="ui button">Update Vehicles</button>
+            <button data-task="update_known_users" class="ui button">Update Known Users</button>
         </div>
+
         <div class="ui clearing raised segment">
-            <button data-task="test2" class="ui right floated primary button">Loading</button>
-            <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
-                aligned
-                as indicated in your original question. But 'ui right floated primary button' works.ui clearing segment'
-                only changes the transparency of the segment, it does not make the segment right
-                aligned
-                as indicated in your original question. But 'ui right floated primary button' works.</p>
+            <button data-task="update_expected_values" class="ui right floated primary button">Update Values</button>
+            <p>WN8 Expected Values: {{ wn8_exp_date }}</p>
         </div>
+
+
         <div class="ui clearing raised segment">
             <button data-task="test3" class="ui right floated primary button">Loading</button>
             <p>ui clearing segment' only changes the transparency of the segment, it does not make the segment right
