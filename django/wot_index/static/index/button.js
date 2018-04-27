@@ -35,41 +35,55 @@ $(function () {
             alert("task url missing");
             return;
         }
-        button.addClass("loading");
+        button.addClass("loading disabled");
         button.removeClass("positive negative");
 
-        const success_action = function (value) {
-            console.info("success", value);
-            button.addClass("positive");
-        };
-
-        const error_action = function () {
-            console.info("error");
-            button.addClass("negative");
-        };
-        let data = button.data();
-        data.type = "button";
-        $.ajax({
-            method: "POST",
-            url: url,
-            data: data,
-        }).done(function (value) {
-            if (value.status === "ok") {
-                success_action(value);
-            } else {
-                error_action();
-            }
-        }).fail(function () {
-            error_action();
-        }).always(function (value) {
+        const always_action = function (value) {
             if (value.text) {
                 button.html(value.text);
             }
             if (value.append_text) {
                 button.html(button.html() + value.append_text);
             }
-            button.removeClass("loading");
-        });
+            button.removeClass("loading disabled");
+        };
+
+        const error_action = function (value) {
+            console.log("ERROR", value);
+            button.addClass("negative");
+            always_action(value);
+        };
+
+        const success_action = function (value) {
+            console.log("SUCCESS", value);
+            if (value.status === "ok") {
+                console.info("success", value);
+                button.addClass("positive");
+                always_action(value);
+            } else if (value.status === "async") {
+                async_action(value);
+            } else {
+                error_action(value);
+            }
+        };
+
+        const async_action = function (value) {
+            console.log("ASYNC", value);
+            setTimeout(function () {
+                $.ajax({method: "GET", url: value.link})
+                    .done(success_action)
+                    .fail(error_action);
+            }, 1000);
+        };
+
+        let data = button.data();
+        data.type = "button";
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: data,
+        }).done(success_action)
+            .fail(error_action);
     });
 });
 

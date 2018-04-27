@@ -1,5 +1,5 @@
-from celery.result import EagerResult, AsyncResult
 from celery.exceptions import TimeoutError
+from celery.result import EagerResult, AsyncResult
 from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
+from itsdangerous import TimestampSigner
 
 from wot_api import tasks
 from wot_api.models import KVStore
@@ -34,6 +35,24 @@ class IndexView(SuperUserRequiredMixin, TemplateView):
 
 
 class TaskViewClass(SuperUserRequiredMixin, View):
+
+    def get(self, request):
+
+        s = TimestampSigner(settings.SECRET_KEY)
+        task_id = s.unsign(request.GET.get("async"), max_age=30)
+        res = AsyncResult(task_id)
+
+        if res.state in ['STARTED', 'PENDING']:
+            return JsonResponse({
+                "status": "async",
+                "link": "%s?async=%s" % (request.path, s.sign(task_id).decode("utf-8"))
+            })
+        elif res.state == "SUCCESS":
+            result = {"status": "ok"}
+            result.update(res.get(timeout=0.5))
+            return JsonResponse(result)
+        print("ERROR", res.state)
+
     def post(self, request):
         task_type = request.POST.get("type")
 
@@ -52,20 +71,21 @@ class TaskViewClass(SuperUserRequiredMixin, View):
                     result = result.result
                 if isinstance(result, AsyncResult):
                     wait = request.POST.get("wait", None)
+                    is_async = False
                     if wait:
                         try:
                             result = result.get(timeout=0.5)
                         except TimeoutError:
-                            result = {
-                                "status": "async",
-                                "taskid": result.task_id,
-                                "append_text": "ASYNC"
-                            }
+                            is_async = True
                     else:
+                        is_async = True
+
+                    if is_async:
+                        s = TimestampSigner(settings.SECRET_KEY)
                         result = {
                             "status": "async",
-                            "taskid": result.task_id,
-                            "append_text": "ASYNC"
+                            "link": "%s?async=%s" % (request.path,
+                                                     s.sign(result.task_id).decode("utf-8"))
                         }
 
                 if isinstance(result, dict):
