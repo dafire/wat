@@ -3,27 +3,76 @@
 {% load wot_api %}
 
 {% block content %}
-  {{ object }} {{ object.account_id }}
-
-  <table class="ui table">
-    <tr>
-      <th>Created</th>
-      <th>Updated</th>
-      <th>First Of Day</th>
-      <th></th>
-      <th>Last Battle</th>
-    </tr>
-    {% for user_info in user_info_list %}
-      <tr>
-        <td>{{ user_info.created|date:'d.m.Y H:i' }}</td>
-        <td>{{ user_info.updated|date:'Y-m-d H:i' }}</td>
-        <td>{{ user_info.first_of_day }}</td>
-        <td><a href="{% url "wot_index:userinfo" pk=user_info.pk %}">{{ user_info.pk }}</a></td>
-        <td>{{ user_info.data.last_battle_time|tsdate|date:'Y-m-d H:i' }}</td>
-
-      </tr>
-    {% endfor %}
-  </table>
+    {{ object }} {{ object.account_id }}
+    <table class="ui collapsing very basic table">
+        {% for stat in stats %}
+            {% with wn8=stat.wn8 %}
+                <thead>
+                <tr>
+                    <td colspan="2">
+                        <h2>{% if forloop.last %}vor dem {% endif %}{{ stat.created|date:"jS F Y H:i" }}
+                            <small>{{ wn8.wn8 }}</small>
+                        </h2>
+                    </td>
+                </tr>
+                </thead>
+                {% if not forloop.last %}
+                    <thead>
+                    <tr class="right aligned">
+                        <th></th>
+                        <th>Kämpfe</th>
+                        <th>ø Schaden</th>
+                        <th>ø Kills</th>
+                        <th>Winrate</th>
+                        <th>WN8</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for vehicle in wn8.vehicles.values %}
+                        <tr class="right aligned">
+                            <td class="left aligned">{{ vehicle.vehicle.name }}</td>
+                            <td>{{ vehicle.battles }}</td>
+                            <td>{{ vehicle.average_damage_done|floatformat:"0" }}</td>
+                            <td>{{ vehicle.average_fragged|floatformat:"2" }}</td>
+                            <td>{{ vehicle.winrate|floatformat:"1" }} %</td>
+                            <td>{{ vehicle.wn8|floatformat:"0" }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                {% endif %}
+                <tbody>
+                <tr class="right aligned">
+                    <td class="left aligned"><b>Gesamt:</b></td>
+                    <td><b>{{ wn8.battles }}</b></td>
+                    <td><b>{{ wn8.average_damage_done|floatformat:"0" }}</b></td>
+                    <td><b>{{ wn8.average_fragged|floatformat:"2" }}</b></td>
+                    <td><b>{{ wn8.winrate|floatformat:"1" }} %</b></td>
+                    <td><b>{{ wn8.wn8|floatformat:"0" }}</b></td>
+                </tr>
+                </tbody>
+            {% endwith %}
+        {% endfor %}
+    </table>
+    {##}
+    {#  <table class="ui table">#}
+    {#    <tr>#}
+    {#      <th>Created</th>#}
+    {#      <th>Updated</th>#}
+    {#      <th>First Of Day</th>#}
+    {#      <th></th>#}
+    {#      <th>Last Battle</th>#}
+    {#    </tr>#}
+    {#    {% for user_info in user_info_list %}#}
+    {#      <tr>#}
+    {#        <td>{{ user_info.created|date:'d.m.Y H:i' }}</td>#}
+    {#        <td>{{ user_info.updated|date:'Y-m-d H:i' }}</td>#}
+    {#        <td>{{ user_info.first_of_day }}</td>#}
+    {#        <td><a href="{% url "wot_index:userinfo" pk=user_info.pk %}">{{ user_info.pk }}</a></td>#}
+    {#        <td>{{ user_info.data.last_battle_time|tsdate|date:'Y-m-d H:i' }}</td>#}
+    {##}
+    {#      </tr>#}
+    {#    {% endfor %}#}
+    {#  </table>#}
 
 
 {% endblock %}

@@ -63,6 +63,9 @@ class VehicleStatistic(models.Model):
     first_of_day = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return "(%r) %r %s" % (self.account_id, self.first_of_day, self.created.strftime("%d.%m.%Y %M:%M"))
+
 
 class VehicleStatisticItem(models.Model):
     id = models.BigAutoField(primary_key=True)

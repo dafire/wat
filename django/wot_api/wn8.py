@@ -1,11 +1,12 @@
-from collections import OrderedDict
+from collections.__init__ import OrderedDict
 
-from wot_api.models import VehicleStatisticItem
+from wot_api.models import VehicleStatisticItem, VehicleStatistic
 
 
 class WN8TankEntry:
     def __init__(self, s: VehicleStatisticItem):
         self.vehicle_id = s.vehicle_id
+        self.vehicle = s.vehicle
         self.name = s.vehicle.name
         self.battles = s.all.get("battles")
         self.expected_fragged = s.vehicle.expected.exp_frag
@@ -66,9 +67,18 @@ class WN8TankEntry:
 
         return wn8
 
+    def subtract_vehicle(self, other: "WN8TankEntry"):
+        self.battles -= other.battles
+        self.deffed -= other.deffed
+        self.fragged -= other.fragged
+        self.spotted -= other.spotted
+        self.damage_done -= other.damage_done
+        self.wins -= other.wins
+
 
 class WN8Calculation:
-    def __init__(self):
+
+    def __init__(self, vehicle: VehicleStatistic = None):
         self.expected_fragged = 0
         self.expected_spotted = 0
         self.expected_damage = 0
@@ -81,6 +91,9 @@ class WN8Calculation:
         self.damage_done = 0
         self.wins = 0
         self.vehicles = OrderedDict()
+        if vehicle:
+            for v in vehicle.vehiclestatisticitem_set.all():
+                self.add_vehicle(v)
 
     def add_vehicle(self, s: VehicleStatisticItem):
         vehicle = WN8TankEntry(s)
@@ -105,7 +118,22 @@ class WN8Calculation:
         self.vehicles[vehicle.vehicle_id] = vehicle
 
     @property
+    def average_damage_done(self):
+        return self.damage_done / self.battles
+
+    @property
+    def winrate(self):
+        return self.wins / self.battles * 100
+
+    @property
+    def average_fragged(self):
+        return self.frags / self.battles
+
+    @property
     def wn8(self):
+        if self.battles == 0:
+            return 0
+
         ratio_damage_done = self.damage_done / self.expected_damage
         ratio_spotted = self.spotted / self.expected_spotted
         ratio_fragged = self.frags / self.expected_fragged
@@ -126,3 +154,26 @@ class WN8Calculation:
               + 145 * min(1.8, ratio_wins_calculated)
 
         return wn8
+
+    def subtract_wn8(self, other: "WN8Calculation"):
+        self.expected_fragged -= other.expected_fragged
+        self.expected_spotted -= other.expected_spotted
+        self.expected_damage -= other.expected_damage
+        self.expected_deffed -= other.expected_deffed
+        self.expected_wins -= other.expected_wins
+        self.deffed -= other.deffed
+        self.frags -= other.frags
+        self.spotted -= other.spotted
+        self.battles -= other.battles
+        self.damage_done -= other.damage_done
+        self.wins -= other.wins
+
+        if self.battles == 0:
+            self.vehicles = {}
+        else:
+            for tank_id in other.vehicles.keys():
+                if self.vehicles[tank_id].battles == other.vehicles[tank_id].battles:
+                    del self.vehicles[tank_id]
+                else:
+                    # print(tank_id, self.vehicles[tank_id].battles, other.vehicles[tank_id].battles)
+                    self.vehicles[tank_id].subtract_vehicle(other.vehicles[tank_id])
