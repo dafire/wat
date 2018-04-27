@@ -1,5 +1,6 @@
 ipython
 
+itsdangerous
 
 celery
 honcho

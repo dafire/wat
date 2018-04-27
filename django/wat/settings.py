@@ -197,6 +197,7 @@ if RAVEN_URL:
 
 CELERY_BROKER_URL = env.str("REDIS_URL", default="redis://127.0.0.1/0")
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_RESULT_BACKEND = env.str("REDIS_URL", default="redis://127.0.0.1/0")
 
 if DEBUG:
     print("Celery always eager!")

@@ -1,3 +1,5 @@
+from celery.result import EagerResult, AsyncResult
+from celery.exceptions import TimeoutError
 from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
@@ -8,6 +10,7 @@ from django.views.generic import TemplateView
 
 from wot_api import tasks
 from wot_api.models import KVStore
+from .tasks import test_task
 
 
 class SuperUserRequiredMixin(AccessMixin):
@@ -44,7 +47,29 @@ class TaskViewClass(SuperUserRequiredMixin, View):
                 response = {"status": "error", "append_text": text}  # TODO: FIXME: sentry event
             else:
                 response = {"status": "ok"}
-                response.update(func(request))  # TODO: FIXME: exception handling für fehler
+                result = func(request)  # TODO: FIXME: exception handling für fehler
+                if isinstance(result, EagerResult):
+                    result = result.result
+                if isinstance(result, AsyncResult):
+                    wait = request.POST.get("wait", None)
+                    if wait:
+                        try:
+                            result = result.get(timeout=0.5)
+                        except TimeoutError:
+                            result = {
+                                "status": "async",
+                                "taskid": result.task_id,
+                                "append_text": "ASYNC"
+                            }
+                    else:
+                        result = {
+                            "status": "async",
+                            "taskid": result.task_id,
+                            "append_text": "ASYNC"
+                        }
+
+                if isinstance(result, dict):
+                    response.update(result)
         else:
             text = " ERROR"
             if settings.DEBUG:
@@ -71,3 +96,6 @@ class TaskView(TaskViewClass):
     def button_update_vehicles(self, request):
         tasks.update_vehicles()
         return {}
+
+    def button_test_task(self, request):
+        return test_task.delay()
