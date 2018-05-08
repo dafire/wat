@@ -13,10 +13,7 @@ from .models import ClanInfo, UserInfo, VehicleStatistic, VehicleStatisticItem, 
 
 logger = get_logger(__name__)
 
-if settings.DEBUG:
-    RATE_LIMIT = 1
-else:
-    RATE_LIMIT = 15
+RATE_LIMIT = 18
 
 
 class TaskType:
@@ -37,7 +34,7 @@ def update_clan(clan_id):
     _wot_api_update.delay(task_type=TaskType.CLAN, clan_id=clan_id)
 
 
-@celery.task()
+@celery.task(ignore_result=True)
 def update_known_users():
     user_ids = User.objects \
         .order_by("account_id", "-userinfo__created") \
@@ -53,7 +50,7 @@ def convert_timestamp(time: int):
     return datetime.fromtimestamp(time).replace(tzinfo=timezone.utc)
 
 
-@celery.task(rate_limit=RATE_LIMIT)
+@celery.task(rate_limit=RATE_LIMIT, ignore_result=True)
 def _wot_api_update(task_type: TaskType, **kwargs):
     if task_type == TaskType.VEHICLE_STATISTIC:
         _update_vehicle_statistic(**kwargs)
@@ -64,7 +61,7 @@ def _wot_api_update(task_type: TaskType, **kwargs):
 
 
 @celery.task()
-def update_vehicles():
+def update_vehicles(ignore_result=True):
     data = wot_api.vehicles()
 
     with transaction.atomic():
@@ -78,13 +75,13 @@ def update_vehicles():
             vehicle.save()
 
 
-@celery.task()
+@celery.task(ignore_result=True)
 def update_default_clan():
     print("update default clan")
     update_clan(settings.WOT_CLAN)
 
 
-@celery.task()
+@celery.task(ignore_result=True)
 def update_expected_values_wn8():
     data = get("https://static.modxvm.com/wn8-data-exp/json/wn8exp.json").json()
 
