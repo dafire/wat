@@ -1,10 +1,14 @@
 import hashlib
+from pprint import pprint
+
 from django.conf import settings
 from django.core.cache import cache
-from pprint import pprint
 from requests import post
 
 CACHE_TIME = 60
+
+connect_timeout, read_timeout = 5.0, 30.0
+
 
 class WOTApiException(Exception):
     def __init__(self, details=None):
@@ -44,7 +48,7 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
 
     data["language"] = "de"
 
-    data_request = post(url, data=data)
+    data_request = post(url, data=data, timeout=(connect_timeout, read_timeout))
     data_request.raise_for_status()
 
     data = data_request.json()
