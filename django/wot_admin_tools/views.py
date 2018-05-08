@@ -1,17 +1,20 @@
+import os
+
 from celery.exceptions import TimeoutError
 from celery.result import EagerResult, AsyncResult
 from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, Http404
+from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 from itsdangerous import TimestampSigner
 
 from wot_api import tasks
 from wot_api.models import KVStore
-from .tasks import test_task
+from .tasks import test_task, database_backup
 
 
 class SuperUserRequiredMixin(AccessMixin):
@@ -117,5 +120,20 @@ class TaskView(TaskViewClass):
         tasks.update_vehicles()
         return {}
 
+    def button_backup_database(self, request):
+        database_backup.delay()
+
     def button_test_task(self, request):
         return test_task.delay()
+
+
+def download_backup(request):
+    path = "asd"
+    print(reverse("wot_admin_tools:download_backup"))
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'inline; filename=' + "database_backup.sql"
+            return response
+    raise Http404
