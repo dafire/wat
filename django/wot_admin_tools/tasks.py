@@ -9,7 +9,20 @@ logger = get_logger(__name__)
 
 @celery.task()
 def test_task():
-    logger.warn("TEST TASK 2 SEC")
-    sleep(10)
     logger.warn("TEST TASK DONE")
     return {"test": "result", "1": 2, "text": str(timezone.now())}
+
+
+@celery.task(rate_limit=0.1)
+def test_task2():
+    sleep(5)
+    logger.warn("TEST TASK SLOW DONE")
+    return {"test": "result", "2": 2, "text": str(timezone.now())}
+
+
+@celery.task()
+def test_task3():
+    logger.warn("TEST TASK 3 SEC")
+    sleep(5)
+    logger.warn("TEST TASK DONE")
+    return {"test": "result", "3": 2, "text": str(timezone.now())}
