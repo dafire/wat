@@ -132,8 +132,11 @@ def download_backup(request, *args, **kwargs):
     print(settings.SECRET_KEY)
     s = TimestampSigner(settings.SECRET_KEY)
     try:
+        tempdir = settings.MEDIA_ROOT
+        if not tempdir:
+            tempdir = tempfile.gettempdir()
         path = s.unsign(request.GET.get("file", ""), max_age=90).decode()
-        file_path = os.path.join(tempfile.gettempdir(), path)
+        file_path = os.path.join(tempdir, path)
         if file_path[-9:] == ".dbbackup" and os.path.exists(file_path):
             with open(file_path, 'rb') as fh:
                 response = HttpResponse(fh.read(), content_type="application/octet-stream")

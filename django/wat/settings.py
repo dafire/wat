@@ -214,6 +214,8 @@ WOT_CLAN = env.int("WOT_CLAN", default=None)
 
 PROJECT_TITLE = env.str("PROJECT_TITLE", default="HelloWorld")
 
+MEDIA_ROOT = env.str("MEDIA_ROOT", default=None)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

@@ -16,7 +16,9 @@ logger = get_logger(__name__)
 
 @celery.shared_task()
 def database_backup():
-    tempdir = tempfile.gettempdir()
+    tempdir = settings.MEDIA_ROOT
+    if not tempdir:
+        tempdir = tempfile.gettempdir()
     destination = tempfile.NamedTemporaryFile(dir=tempdir, delete=False, suffix=".dbbackup")
     dbsettings = settings.DATABASES['default']
     command = ['pg_dump', '-h', dbsettings['HOST'], '-U', dbsettings['USER'], '-Fc', dbsettings['NAME']]
