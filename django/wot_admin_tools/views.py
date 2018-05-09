@@ -129,7 +129,6 @@ class TaskView(TaskViewClass):
 
 
 def download_backup(request, *args, **kwargs):
-    print(settings.SECRET_KEY)
     s = TimestampSigner(settings.SECRET_KEY)
     try:
         tempdir = settings.MEDIA_ROOT

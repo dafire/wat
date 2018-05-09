@@ -108,6 +108,8 @@ WSGI_APPLICATION = 'wat.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+DATABASE_URL = env.str("DATABASE_URL", default=None)
+
 DATABASES = {
     'default': env.db(),
 }
