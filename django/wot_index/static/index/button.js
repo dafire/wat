@@ -59,6 +59,9 @@ $(function () {
             if (value.status === "ok") {
                 console.info("success", value);
                 button.addClass("positive");
+                if (value.browse) {
+                    window.location.href = value.browse;
+                }
                 always_action(value);
             } else if (value.status === "async") {
                 async_action(value);

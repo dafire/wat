@@ -109,7 +109,7 @@ WSGI_APPLICATION = 'wat.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db(default="postgres://postgres:postgres@localhost/postgres"),
+    'default': env.db(),
 }
 
 if not DEBUG:
@@ -195,9 +195,12 @@ if RAVEN_URL:
     if PROJECT_VERSION:
         RAVEN_CONFIG['release'] = PROJECT_VERSION
 
-CELERY_BROKER_URL = env.str("REDIS_URL", default="redis://127.0.0.1/0")
+CELERY_BROKER_URL = env.str("REDIS_URL")
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_RESULT_BACKEND = env.str("REDIS_URL", default="redis://127.0.0.1/0")
+CELERY_RESULT_BACKEND = env.str("REDIS_URL")
+CELERY_TASK_ACKS_LATE = True
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_TASK_DEFAULT_QUEUE = "default"
 
 if DEBUG:
     print("Celery always eager!")
