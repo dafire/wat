@@ -13,7 +13,7 @@ RUN rm -rf wat_ui/static/ui/semantic/components;\
     chown -R code /code
 
 USER code
-RUN SECRET_KEY="nokeyneeded" ./manage.py collectstatic
+RUN ./manage.py collectstatic
 
 EXPOSE 3000
 CMD ["/config/entrypoint.sh"]
