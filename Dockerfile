@@ -10,8 +10,10 @@ ADD django /code/
 COPY bin/pg_dump /usr/local/bin
 RUN rm -rf wat_ui/static/ui/semantic/components;\
     useradd -ms /bin/bash code;\
-    chown code /code;\
-    ./manage.py collectstatic
+    chown -R code /code
+
 USER code
+RUN SECRET_KEY="nokeyneeded" ./manage.py collectstatic
+
 EXPOSE 3000
 CMD ["/config/entrypoint.sh"]
