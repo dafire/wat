@@ -2,4 +2,4 @@
 
 ./manage.py test
 
-codecov --commit=${CI_COMMIT_ID}
+codecov
