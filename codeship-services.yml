@@ -9,8 +9,21 @@ wat:
     dockerfile: Dockerfile
   volumes_from:
      - prebuild
+  cached: true
+  depends_on:
+    - redis
+    - postgres
+  environment:
+    - DATABASE_URL=postgres://postgres@postgres/wat
+    - REDIS_URL=redis://redis
 
 nginx:
   build:
     image: dafire/wat-nginx
     dockerfile: Dockerfile.nginx
+
+redis:
+  image: healthcheck/redis:alpine
+
+postgres:
+  image: healthcheck/postgres:alpine

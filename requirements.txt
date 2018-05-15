@@ -15,7 +15,9 @@ cffi==1.11.5              # via brotlipy
 chardet==3.0.4            # via requests
 cli-helpers[styles]==1.0.2  # via pgcli
 click==6.7                # via pgcli, pgspecial
+codecov==2.0.15
 configobj==5.0.6          # via pgcli
+coverage==4.5.1           # via codecov
 decorator==4.3.0          # via ipython, traitlets
 django-celery-beat==1.1.1
 django-debug-toolbar==1.9.1
