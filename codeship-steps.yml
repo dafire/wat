@@ -1,6 +1,11 @@
 - service: prebuild
   command: /src/config/version-info.sh
 
+- name: tests
+  service: wat
+  command: /config/run-tests.sh
+  encrypted_env_file: env.encrypted
+
 - service: wat
   type: push
   image_name: dafire/wat
@@ -10,12 +15,3 @@
   type: push
   image_name: dafire/wat-nginx
   encrypted_dockercfg_path: config/dockercfg.encrypted
-
-#- name: tests
-#  service: wat
-#  command: python manage.py test
-
-- name: codecov
-  service: wat
-  command: bash -c "curl -s https://codecov.io/bash"
-  encrypted_env_file: env.encrypted

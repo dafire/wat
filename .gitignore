@@ -34,3 +34,4 @@ __pycache__/
 /django/wot_ui/static/ui/semantic/components
 .idea/markdown-navigator*
 /.idea/markdown-exported-files.xml
+/tmp

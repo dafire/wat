@@ -7,14 +7,12 @@ wat:
   build:
     image: dafire/wat
     dockerfile: Dockerfile
-  volumes_from:
-     - prebuild
   cached: true
   depends_on:
     - redis
     - postgres
   environment:
-    - DATABASE_URL=postgres://postgres@postgres/wat
+    - DATABASE_URL=postgres://postgres:password@postgres/wat
     - REDIS_URL=redis://redis
 
 nginx:
@@ -27,3 +25,5 @@ redis:
 
 postgres:
   image: healthcheck/postgres:alpine
+  environtment:
+    - POSTGRES_PASSWORD=password

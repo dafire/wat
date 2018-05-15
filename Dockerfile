@@ -8,6 +8,7 @@ RUN pip install -r requirements.txt;\
 ADD config /config/
 ADD django /code/
 COPY bin/pg_dump /usr/local/bin
+COPY tmp/artifacts/default.env /config/default.env
 RUN rm -rf wat_ui/static/ui/semantic/components;\
     useradd -ms /bin/bash code;\
     mkdir /shared;\
