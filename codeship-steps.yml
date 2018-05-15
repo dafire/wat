@@ -4,7 +4,6 @@
 - name: tests
   service: wat
   command: /config/run-tests.sh
-  encrypted_env_file: config/env.encrypted
 
 - service: wat
   type: push
