@@ -7,7 +7,7 @@ RUN pip install -r requirements.txt;\
     ln -sf /usr/local/bin/pgcli /usr/local/bin/psql
 ADD config /config/
 ADD django /code/
-COPY bin/* /usr/local/bin
+COPY bin/* /usr/local/bin/
 COPY tmp/artifacts/default.env /config/default.env
 RUN rm -rf wat_ui/static/ui/semantic/components;\
     useradd -ms /bin/bash code;\
