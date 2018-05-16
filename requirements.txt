@@ -13,10 +13,7 @@ celery==4.1.0
 certifi==2018.4.16        # via requests
 cffi==1.11.5              # via brotlipy
 chardet==3.0.4            # via requests
-cli-helpers[styles]==1.0.2  # via pgcli
-click==6.7                # via pgcli, pgspecial
 codecov==2.0.15
-configobj==5.0.6          # via pgcli
 coverage==4.5.1           # via codecov
 decorator==4.3.0          # via ipython, traitlets
 django-celery-beat==1.1.1
@@ -28,37 +25,30 @@ django==2.0.5
 funcy==1.10.2
 hiredis==0.2.0
 honcho==1.0.1
-humanize==0.5.1           # via pgcli
 idna==2.6                 # via requests
 ipython-genutils==0.2.0   # via traitlets
-ipython==6.3.1
+ipython==6.4.0
 itsdangerous==0.24
 jedi==0.12.0              # via ipython
 kombu==4.1.0              # via celery
 parso==0.2.0              # via jedi
 pexpect==4.5.0            # via ipython
-pgcli==1.9.1
-pgspecial==1.10.0         # via pgcli
 pickleshare==0.7.4        # via ipython
-prompt-toolkit==1.0.15    # via ipython, pgcli
+prompt-toolkit==1.0.15    # via ipython
 psycopg2-binary==2.7.4
-psycopg2==2.7.4           # via pgcli
 ptyprocess==0.5.2         # via pexpect
 pycparser==2.18           # via cffi
-pygments==2.2.0           # via cli-helpers, ipython, pgcli
+pygments==2.2.0           # via ipython
 pytz==2018.4              # via celery, django
-raven==6.7.0
+raven==6.8.0
 redis==2.10.6
 requests==2.18.4
-setproctitle==1.1.10      # via pgcli
 simplegeneric==0.8.1      # via ipython
-six==1.11.0               # via configobj, django-environ, django-extensions, prompt-toolkit, traitlets
-sqlparse==0.2.4           # via django-debug-toolbar, pgcli, pgspecial
-tabulate[widechars]==0.8.2  # via cli-helpers
-terminaltables==3.1.0     # via cli-helpers
+six==1.11.0               # via django-environ, django-extensions, prompt-toolkit, traitlets
+sqlparse==0.2.4           # via django-debug-toolbar
 traitlets==4.3.2          # via ipython
 urllib3==1.22             # via requests
 uwsgi==2.0.17
 vine==1.1.4               # via amqp
-wcwidth==0.1.7            # via prompt-toolkit, tabulate
+wcwidth==0.1.7            # via prompt-toolkit
 whitenoise==3.3.1

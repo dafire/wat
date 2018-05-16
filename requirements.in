@@ -10,7 +10,6 @@ raven
 requests
 
 psycopg2-binary
-pgcli
 
 django
 django-extensions
