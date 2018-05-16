@@ -21,7 +21,7 @@ def database_backup():
         tempdir = tempfile.gettempdir()
     destination = tempfile.NamedTemporaryFile(dir=tempdir, delete=False, suffix=".dbbackup")
     dbsettings = settings.DATABASES['default']
-    command = ['pg_dump', '--dbname=%s'%settings.DATABASE_URL]
+    command = ['pg_dump', '-Fc', '--dbname=%s' % settings.DATABASE_URL]
     ps = subprocess.Popen(command, stdout=destination)
     destination.close()
     filename = destination.name[len(tempdir) + 1:]
