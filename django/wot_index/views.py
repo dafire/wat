@@ -7,6 +7,9 @@ from wot_api.wn8 import WN8Calculation
 from wot_user.models import User
 
 
+class IndexView(TemplateView):
+    template_name = "index/index.html"
+
 class ClanView(TemplateView):
     template_name = "index/clan.html"
 
