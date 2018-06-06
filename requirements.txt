@@ -4,12 +4,12 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-amqp==2.2.2               # via kombu
+amqp==2.3.2               # via kombu
 appnope==0.1.0            # via ipython
 backcall==0.1.0           # via ipython
 billiard==3.5.0.3         # via celery
 brotlipy==0.7.0
-celery==4.1.0
+celery==4.1.1
 certifi==2018.4.16        # via requests
 cffi==1.11.5              # via brotlipy
 chardet==3.0.4            # via requests
@@ -21,7 +21,7 @@ django-debug-toolbar==1.9.1
 django-environ==0.4.4
 django-extensions==2.0.7
 django-redis==4.9.0
-django==2.0.5
+django==2.0.6
 funcy==1.10.2
 hiredis==0.2.0
 honcho==1.0.1
@@ -30,9 +30,9 @@ ipython-genutils==0.2.0   # via traitlets
 ipython==6.4.0
 itsdangerous==0.24
 jedi==0.12.0              # via ipython
-kombu==4.1.0              # via celery
-parso==0.2.0              # via jedi
-pexpect==4.5.0            # via ipython
+kombu==4.2.1              # via celery
+parso==0.2.1              # via jedi
+pexpect==4.6.0            # via ipython
 pickleshare==0.7.4        # via ipython
 prompt-toolkit==1.0.15    # via ipython
 psycopg2-binary==2.7.4
@@ -40,7 +40,7 @@ ptyprocess==0.5.2         # via pexpect
 pycparser==2.18           # via cffi
 pygments==2.2.0           # via ipython
 pytz==2018.4              # via celery, django
-raven==6.8.0
+raven==6.9.0
 redis==2.10.6
 requests==2.18.4
 simplegeneric==0.8.1      # via ipython

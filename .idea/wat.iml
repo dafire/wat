@@ -29,6 +29,7 @@
         <option value="$MODULE_DIR$/django/wot_admin_tools/templates" />
         <option value="$MODULE_DIR$/django/wot_index/templates" />
         <option value="$MODULE_DIR$/django/wot_ui/templates" />
+        <option value="$MODULE_DIR$/django/wot_user/templates" />
       </list>
     </option>
   </component>

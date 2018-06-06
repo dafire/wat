@@ -1,18 +1,36 @@
 import re
+from datetime import timedelta
+from pprint import pprint
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
+from django.shortcuts import render
+from django.urls import reverse
+from django.utils import timezone
 from requests import get, post
 
-from .models import AuthToken
 from .auth import Authentication, Verification, check_nonce
+from .models import AuthToken
+
+
+def login_response(request):
+    auth = Authentication(return_to=request.build_absolute_uri(reverse("wot_user:callback")))
+    url = auth.authenticate('https://eu.wargaming.net/id/openid/')
+    return HttpResponseRedirect(url)
 
 
 def simple_login(request):
-    auth = Authentication(return_to=request.build_absolute_uri("/auth/callback"))  # FIXME: url nicht hardcoden
-    url = auth.authenticate('https://eu.wargaming.net/id/openid/')
-    return HttpResponseRedirect(url)
+    pprint(request.COOKIES)
+    if 'fast_login' not in request.COOKIES:
+        return HttpResponseRedirect(reverse("wot_user:login-ext"))
+    return login_response(request)
+
+
+def login_view(request):
+    if request.GET.get("login"):
+        return login_response(request)
+    return render(request, "wot_user/login.html", context={"login_url": reverse("wot_user:login-ext") + "?login=1"})
 
 
 def simple_callback(request):
@@ -29,7 +47,9 @@ def simple_callback(request):
     user = authenticate(request, account_id=account_id, wot_username=nickname)
     if user:
         login(request, user)
-        return HttpResponseRedirect("/")
+        response = HttpResponseRedirect("/")
+        response.set_cookie("fast_login", "1", expires=timezone.now() + timedelta(days=7))
+        return response
     else:
         return JsonResponse({"error": True, "acc": account_id, "nick": nickname})
 

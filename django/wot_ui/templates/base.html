@@ -59,11 +59,11 @@
                                         <a class="item" href="{% url "wot_admin_tools:index" %}">AdminTools</a>
                                         <div class="divider"></div>
                                     {% endif %}
-                                    <a class="item" href="{% url "wat_user:logout" %}">Logout</a>
+                                    <a class="item" href="{% url "wot_user:logout" %}">Logout</a>
                                 </div>
                             </div>
                         {% else %}
-                            <a class="item" href="{% url "wat_user:login" %}">Login</a>
+                            <a class="item" href="{% url "wot_user:login" %}">Login</a>
                         {% endif %}
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                         {% if request.user.is_authenticated %}
                             <a class="item">{{ request.user.nickname }}</a>
                         {% else %}
-                            <a class="item" href="{% url "wat_user:login" %}">Login</a>
+                            <a class="item" href="{% url "wot_user:login" %}">Login</a>
                         {% endif %}
                         <a class="menu item">
                             <div class="ui basic icon toggle button">
@@ -83,7 +83,7 @@
                     </div>
                     <div class="ui vertical accordion borderless fluid menu" style="display:none">
                         {% if request.user.is_authenticated %}
-                            <a class="item" href="{% url "wat_user:logout" %}">Logout</a>
+                            <a class="item" href="{% url "wot_user:logout" %}">Logout</a>
                         {% endif %}
 
                         {#            <a class="active item"> Home</a><a class="item"> About</a><a class="item"> Contact</a>#}

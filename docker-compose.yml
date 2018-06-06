@@ -20,7 +20,7 @@ services:
       DEBUG: 1
       SECRET_KEY: test_key
       REDIS_URL: "redis://redis:6379/0"
-      DATABASE_URL: "postgres://postgres:postgres@db/postgres"
+      DATABASE_URL: "postgres://postgres:postgres@db/wat"
       ALLOWED_HOSTS: "*"
       PROJECT_TITLE: "TEST"
     depends_on:
