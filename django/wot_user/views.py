@@ -55,7 +55,7 @@ def simple_callback(request):
 
 
 def ext_login(request):
-    redirect_url = request.build_absolute_uri("/auth/callback2")  # FIXME: url nicht hardcoden
+    redirect_url = request.build_absolute_uri(reverse("wot_user:callback2"))
     login_link_request = get("https://api.worldoftanks.eu/wot/auth/login/", params={
         "application_id": settings.WARGAMING_TOKEN,
         "nofollow": "1",
@@ -103,6 +103,6 @@ def ext_callback(request):
         return JsonResponse({"error": True, "acc": account_id, "nick": nickname})
 
 
-def logoutView(request):
+def logout_view(request):
     logout(request)
     return HttpResponseRedirect("/")

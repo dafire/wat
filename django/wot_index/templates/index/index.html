@@ -2,4 +2,14 @@
 
 {% block content %}
 
+    {% if new_rows %}
+        <div>New Rows: {{ new_rows }}</div>
+    {% endif %}
+    {% if dates %}
+        {% for date in dates %}
+            <div>{{ date }}{{ date|date:'Y-m-d H:i' }}</div>
+        {% endfor %}
+    {% endif %}
+
+
 {% endblock %}

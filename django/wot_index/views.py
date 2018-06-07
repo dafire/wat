@@ -2,13 +2,16 @@ from django.db.models import Prefetch
 from django.views.generic import TemplateView, DetailView
 
 from wot_api import models
-from wot_api.models import VehicleStatistic, VehicleStatisticItem
+from wot_api.models import VehicleStatistic, VehicleStatisticItem, AccountStats
+from wot_api.tasks import convert_timestamp
 from wot_api.wn8 import WN8Calculation
+from wot_api.wot_api import account2bydate
 from wot_user.models import User
 
 
 class IndexView(TemplateView):
     template_name = "index/index.html"
+
 
 class ClanView(TemplateView):
     template_name = "index/clan.html"
@@ -51,11 +54,11 @@ class PlayerView(DetailView):
         out_stats = []
 
         stats = models.VehicleStatistic.objects \
-            .filter(account_id=self.object.account_id) \
-            .prefetch_related(prefetch) \
-            .only("pk", "first_of_day", "account", "created") \
-            .order_by("-created") \
-            .all()[:5]
+                    .filter(account_id=self.object.account_id) \
+                    .prefetch_related(prefetch) \
+                    .only("pk", "first_of_day", "account", "created") \
+                    .order_by("-created") \
+                    .all()[:5]
 
         last_stat = None
         for stat in stats:
@@ -105,3 +108,26 @@ class WN8View(DetailView):
 class UserInfoView(DetailView):
     model = models.UserInfo
     template_name = "index/userinfo.html"
+
+
+class TestView(TemplateView):
+    template_name = "index/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        account_id = self.request.user.account_id
+
+        try:
+            latest = AccountStats.objects.filter(account_id=account_id).only('date').latest().date
+        except AccountStats.DoesNotExist:
+            latest = None
+
+        data, context['new_rows'] = account2bydate(account_id, last_data=latest)
+
+        for row in data:
+            AccountStats.objects.create(account_id=account_id,
+                                        date=convert_timestamp(row.get("date")), stat=row.get("stat"))
+
+        context['dates'] = AccountStats.objects.filter(account_id=account_id).values_list("date", flat=True)
+
+        return context

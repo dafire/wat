@@ -1,4 +1,5 @@
 import hashlib
+import time
 from pprint import pprint
 
 from django.conf import settings
@@ -82,6 +83,21 @@ def get_clan_details(clan_id, access_token=None):
 def vehicle_statistics(account_id):
     data = get_request("tanks", "stats", {"account_id": account_id})
     return data.get("data").get(str(account_id))
+
+
+def account2bydate(account_id, last_data=None):
+    if not last_data:
+        last_data = int(time.time() - 3600 * 24 * 31)
+    else:
+        last_data = int(last_data.timestamp()) + 1
+    data = get_request("stats", "account2bydate", {
+        "account_id": account_id,
+        "from_date": last_data,
+        "to_date": int(time.time()),
+        "language": "de",
+        "interval": 1
+    })
+    return data.get("data"), data.get("meta")
 
 
 def vehicles():

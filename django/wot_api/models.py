@@ -26,6 +26,26 @@ class UserInfo(models.Model):
         get_latest_by = "created"
 
 
+class AccountStats(models.Model):
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.DO_NOTHING,
+        db_index=True,
+        db_constraint=False,
+        to_field="account_id",
+        swappable=True
+    )
+    date = models.DateTimeField(db_index=True)
+    stat = JSONField()
+
+    def __str__(self):
+        return "<Stat %r %r>" % (self.account_id, self.date)
+
+    class Meta:
+        get_latest_by = "date"
+        ordering = ['-date']
+
+
 class Vehicle(models.Model):
     tank_id = models.IntegerField(primary_key=True)
 
