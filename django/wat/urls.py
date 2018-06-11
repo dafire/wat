@@ -17,9 +17,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
+from wot_web_wtr.views import test
+
 urlpatterns = [
     path('auth/', include('wot_user.urls')),
     path('test/', include('wat_test.urls')),
+    path('t', test),
     path('a/', include('wot_admin_tools.urls')),
     path('admin/', admin.site.urls),
 ]

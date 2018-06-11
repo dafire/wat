@@ -35,3 +35,4 @@ __pycache__/
 .idea/markdown-navigator*
 /.idea/markdown-exported-files.xml
 /tmp
+/.idea/usage.statistics.xml

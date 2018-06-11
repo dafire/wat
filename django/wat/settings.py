@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'wat_test',
     'wot_api',
     'wot_index',
+    'wot_web_wtr',
     'wot_admin_tools',
 ]
 
@@ -218,6 +219,13 @@ PROJECT_TITLE = env.str("PROJECT_TITLE", default="HelloWorld")
 
 MEDIA_ROOT = env.str("MEDIA_ROOT", default=None)
 
+
+def skip_static_requests(record):
+    if record.args[0].startswith('GET /static/'):
+        return False
+    return True
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -228,13 +236,27 @@ LOGGING = {
         'simple': {
             'format': '%(module)12s %(levelname)s %(message)s'
         },
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[%(server_time)s] %(message)s',
+        }
     },
     'filters': {
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
         },
+        'skip_static_requests': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_static_requests
+        }
     },
     'handlers': {
+        'django.server': {
+            'level': 'INFO',
+            'filters': ['skip_static_requests'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
         'sentry': {
             'level': 'WARNING',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
@@ -272,6 +294,12 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False,
-        }
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+
     }
 }
