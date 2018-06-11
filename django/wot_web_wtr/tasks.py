@@ -1,30 +1,34 @@
-from datetime import datetime
-from pprint import pprint
-
 import requests
+from datetime import datetime
 from django.utils.timezone import now
+from pprint import pprint
 
 from wot_web_wtr.models import WebWtrRating
 
 SEARCH_URL = "https://worldoftanks.eu/wgris/hof/achievements/search/by_user/"
 
 
-def update_user(account_id, high_tier=False, day=False):
+def update_user(account_id, high_tier=False, day=None, month=None, overall=None, time_slice=None):
     if high_tier:
         tier_group = "1"
     else:
         tier_group = "0"
 
     if day:
-        if type(day) == str:
-            time_slice = day
-            battles = 100
-        else:
-            time_slice = "day"
-            battles = 10
-    else:
-        time_slice = now().strftime("%Y-%m")
+        slice = "day"
+        battles = 10
+    elif time_slice:
+        slice = time_slice
         battles = 100
+    elif month:
+        slice = now().strftime("%Y-%m")
+        battles = 100
+    elif overall:
+        slice = "overall"
+        battles = 1000
+
+    else:
+        return
 
     params = {
         "lang": "de",
@@ -32,7 +36,7 @@ def update_user(account_id, high_tier=False, day=False):
         "page_size": "20",
         "battles_count": str(battles),
         "tier_group": str(tier_group),
-        "time_slice": str(time_slice),
+        "time_slice": str(slice),
         "stat_type": "sbr",
         "spa_id": str(account_id),
     }
@@ -51,7 +55,7 @@ def update_user(account_id, high_tier=False, day=False):
             account_id=account_id,
             battles_count=battles,
             tier_group=tier_group,
-            time_slice=time_slice,
+            time_slice=slice,
             date=datetime.utcfromtimestamp(meta.get("date", 0)),
             personal=personal,
             errors=errors
