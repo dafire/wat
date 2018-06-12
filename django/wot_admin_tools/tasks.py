@@ -22,8 +22,7 @@ def database_backup():
     destination = tempfile.NamedTemporaryFile(dir=tempdir, delete=False, suffix=".dbbackup")
     dbsettings = settings.DATABASES['default']
     command = ['pg_dump', '-Fc', '--dbname=%s' % settings.DATABASE_URL]
-    ps = subprocess.Popen(command, stdout=destination)
-    destination.close()
+    subprocess.call(command, stdout=destination)
     filename = destination.name[len(tempdir) + 1:]
     logger.info("created backup: %s", filename)
     remove_database_backup.apply_async((destination.name,), countdown=120)
