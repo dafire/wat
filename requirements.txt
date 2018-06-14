@@ -34,6 +34,7 @@ kombu==4.2.1              # via celery
 parso==0.2.1              # via jedi
 pexpect==4.6.0            # via ipython
 pickleshare==0.7.4        # via ipython
+pillow==5.1.0
 prompt-toolkit==1.0.15    # via ipython
 psycopg2-binary==2.7.4
 ptyprocess==0.5.2         # via pexpect

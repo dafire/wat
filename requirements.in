@@ -8,6 +8,7 @@ honcho
 raven
 
 requests
+pillow
 
 psycopg2-binary
 
