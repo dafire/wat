@@ -23,7 +23,7 @@ from wot_web_wtr.views import test
 urlpatterns = [
     path('auth/', include('wot_user.urls')),
     path('test/', include('wat_test.urls')),
-    path('b/', banner),
+    path('b.png', banner),
     path('t', test),
     path('a/', include('wot_admin_tools.urls')),
     path('admin/', admin.site.urls),
