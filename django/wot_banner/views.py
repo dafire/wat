@@ -33,7 +33,7 @@ class Banner():
 
     def response(self):
         response = HttpResponse(content_type="image/jpeg")
-        self.image.save(response, "JPEG", quality=95)
+        self.image.save(response, "JPEG", quality=90, progression=True, optimize=True, dpi=(72, 72))
         return response
 
 
