@@ -32,7 +32,7 @@ class Banner():
         return size[0] + x_offset, size[1] + y_offset
 
     def response(self):
-        response = HttpResponse(content_type="image/png")
+        response = HttpResponse(content_type="image/jpeg")
         self.image.save(response, "JPEG", quality=95)
         return response
 
