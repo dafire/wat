@@ -1,7 +1,9 @@
-import requests
 from datetime import datetime
-from django.utils.timezone import now
 from pprint import pprint
+
+import requests
+from celery import shared_task
+from django.utils.timezone import now
 
 from wot_web_wtr.models import WebWtrRating
 
@@ -62,3 +64,10 @@ def update_user(account_id, high_tier=False, day=None, month=None, overall=None,
         )
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
+
+
+@shared_task
+def update_web_wtr():
+    update_user(500447063, day=True)
+    update_user(500447063, month=True)
+    update_user(500447063, overall=True)

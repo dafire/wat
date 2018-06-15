@@ -1,8 +1,10 @@
+import time
 from datetime import datetime, timedelta
 
 import celery
 from celery.utils.log import get_logger
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.utils import timezone
 from requests import get
@@ -101,6 +103,13 @@ def update_expected_values_wn8():
 @celery.task()
 def update_xvm_scales():
     data = get("https://static.modxvm.com/xvmscales.json").json()
+    data['fetched'] = int(time.time())
+    cache.set('xvm_scales', data, timeout=None)
+
+
+def get_xvm_scale(scale):
+    scales = cache.get('xvm_scales', {})
+    return scales.get(scale, [])
 
 
 def _update_vehicle_statistic(account_id, userinfo_id):
