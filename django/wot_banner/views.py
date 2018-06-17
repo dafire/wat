@@ -1,7 +1,9 @@
+import os
+import time
 from collections import defaultdict
 
-import os
 from PIL import Image, ImageDraw, ImageFont
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.cache import cache_control
 
@@ -36,6 +38,9 @@ class Banner():
         self.image.save(response, "JPEG", quality=90, progression=True, optimize=True, dpi=(72, 72))
         return response
 
+    def save(self, filename):
+        self.image.save(filename, "JPEG", quality=90, progression=True, optimize=True, dpi=(72, 72))
+
 
 LABEL = {"day": "Gestern", "overall": "seit Dez.14"}
 
@@ -45,8 +50,7 @@ WINRATE_X = OFFSET + 260
 GEFECHTE_X = OFFSET + 110
 
 
-@cache_control(max_age=7200)
-def banner(request):
+def create_image():
     img = Banner()
     ratings = WebWtrRating.objects.values('date', 'time_slice', 'personal') \
         .filter(time_slice__in=['day', 'overall', '2018-06']) \
@@ -96,4 +100,31 @@ def banner(request):
                 color = 'red'
             img.draw_caption("({0:+})".format(rat[l][4]), color=color, x_offset=x + 1, y_offset=line)
 
+    return img
+
+
+@cache_control(max_age=7200)
+def banner(request):
+    img = create_image()
     return img.response()
+
+
+@cache_control(max_age=7200)
+def banner_x_accel(request):
+    if not settings.MEDIA_ROOT:
+        return HttpResponse("missing media root", status=500)
+    file_name = "generol.jpg"
+    file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+    try:
+        ftime = os.path.getctime(file_path)
+    except FileNotFoundError:
+        ftime = 0
+        pass
+
+    if time.time() - ftime > 7200:
+        img = create_image()
+        img.save(file_path)
+
+    response = HttpResponse(content_type="image/jpeg")
+    response['X-Accel-Redirect'] = "/media/" + file_name
+    return response
