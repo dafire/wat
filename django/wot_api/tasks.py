@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import celery
 from celery.utils.log import get_logger
 from django.conf import settings
-from django.core.cache import cache
+from django.core.cache import cache, caches
 from django.db import transaction
 from django.utils import timezone
 from requests import get
@@ -14,6 +14,8 @@ from . import wot_api
 from .models import ClanInfo, UserInfo, VehicleStatistic, VehicleStatisticItem, Vehicle, ExpectedWN8Values, KVStore
 
 logger = get_logger(__name__)
+
+local_cache = caches['local']
 
 RATE_LIMIT = 18
 
@@ -108,8 +110,13 @@ def update_xvm_scales():
 
 
 def get_xvm_scale(scale):
+    data = local_cache.get('_xscale_%s' % scale)
+    if data:
+        return data
     scales = cache.get('xvm_scales', {})
-    return scales.get(scale, [])
+    data = scales.get(scale, [])
+    local_cache.set('_xscale_%s' % scale, data, timeout=7200)
+    return data
 
 
 def _update_vehicle_statistic(account_id, userinfo_id):

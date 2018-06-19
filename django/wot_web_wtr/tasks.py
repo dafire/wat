@@ -1,5 +1,4 @@
 from datetime import datetime
-from pprint import pprint
 
 import requests
 from celery import shared_task
@@ -10,6 +9,7 @@ from wot_web_wtr.models import WebWtrRating
 SEARCH_URL = "https://worldoftanks.eu/wgris/hof/achievements/search/by_user/"
 
 
+@shared_task
 def update_user(account_id, high_tier=False, day=None, month=None, overall=None, time_slice=None):
     if high_tier:
         tier_group = "1"
@@ -49,10 +49,7 @@ def update_user(account_id, high_tier=False, day=None, month=None, overall=None,
         errors = json.get("errors")
         meta = json.get("meta")
         personal = json.get("data", {}).get("personal")
-        pprint(params)
-        pprint(errors)
-        pprint(meta),
-        pprint(personal)
+
         WebWtrRating.objects.create(
             account_id=account_id,
             battles_count=battles,
@@ -64,6 +61,9 @@ def update_user(account_id, high_tier=False, day=None, month=None, overall=None,
         )
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
+        return False
+
+    return True
 
 
 @shared_task

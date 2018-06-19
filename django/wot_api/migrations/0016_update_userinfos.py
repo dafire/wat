@@ -8,7 +8,6 @@ MINUTES = "minutes"
 
 def create_update(apps, schema_editor):
     periodic_task_model = apps.get_model("django_celery_beat", "PeriodicTask")
-    periodics_task_model = apps.get_model("django_celery_beat", "PeriodicTasks")
 
     interval_schedule_model = apps.get_model("django_celery_beat", "IntervalSchedule")
 
@@ -19,6 +18,7 @@ def create_update(apps, schema_editor):
                                               interval=interval_1m)
 
     # mark schedule as changed
+    periodics_task_model = apps.get_model("django_celery_beat", "PeriodicTasks")
     periodics_task_model.objects.update_or_create(ident=1, defaults={'last_update': now()})
 
 
