@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load semanticui %}
+
+{% block content %}
+
+    <form class="ui form" method="POST">
+        {% csrf_token %}
+        {% render_form form %}
+        <button class="ui submit button">Submit</button>
+    </form>
+
+    {% if pl %}
+        <ul>
+            {% for p in pl %}
+                <li><a href="{% url "wot_banner:adhoc" userid=p.account_id %}">{{ p.nickname }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

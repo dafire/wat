@@ -17,17 +17,14 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
-from wot_banner.views import banner, banner_x_accel, banner_view
 from wot_web_wtr.views import test
 
 urlpatterns = [
     path('auth/', include('wot_user.urls')),
     path('test/', include('wat_test.urls')),
-    path('banner/<int:userid>.png', banner_view),
-    path('b.jpg', banner),
-    path('c.jpg', banner_x_accel),
     path('t', test),
     path('a/', include('wot_admin_tools.urls')),
+    path('', include('wot_banner.urls')),
     path('admin/', admin.site.urls),
 ]
 

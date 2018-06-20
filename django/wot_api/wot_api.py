@@ -1,9 +1,9 @@
-import hashlib
 import time
-from pprint import pprint
 
+import hashlib
 from django.conf import settings
 from django.core.cache import cache
+from pprint import pprint
 from requests import post
 
 CACHE_TIME = 60
@@ -68,6 +68,11 @@ def get_request(section, endpoint, data=None, game='wot', disable_cache=False):
 
     pprint(data)
     raise WOTApiException("wot not ok :(")
+
+
+def players(search):
+    data = get_request("account", "list", {"search": search})
+    return data.get("data")
 
 
 def players_personal_data(account_id, access_token=None):

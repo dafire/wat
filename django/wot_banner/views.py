@@ -1,11 +1,14 @@
-import os
 import time
 
+import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from django.shortcuts import render
 from django.views.decorators.cache import cache_control
 
-from wot_banner.tasks import create_image
+from wot_api.wot_api import players
+from wot_banner.tasks import create_image, update_banner
+from . import forms
 
 
 @cache_control(max_age=3600)
@@ -49,3 +52,16 @@ def banner_x_accel(request):
     response = HttpResponse(content_type="image/jpeg")
     response['X-Accel-Redirect'] = "/media/" + file_name
     return response
+
+
+def banner_search_view(request):
+    form = forms.SearchForm(data=request.POST)
+    pl = None
+    if request.method == "POST" and form.is_valid():
+        pl = players(search=form.cleaned_data['name'])
+    return render(request, "wot_banner/search.html", context={"form": form, "pl": pl})
+
+
+def banner_view_adhoc(request, userid):
+    update_banner(userid)
+    return render(request, "wot_banner/adhoc.html", context={"userid": userid})

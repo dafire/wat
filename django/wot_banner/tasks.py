@@ -1,6 +1,6 @@
-import os
 from collections import defaultdict
 
+import os
 from PIL import Image, ImageDraw, ImageFont
 from celery import shared_task, chord
 from django.conf import settings
@@ -10,21 +10,21 @@ from wot_api.tasks import get_xvm_scale
 from wot_web_wtr.models import WebWtrRating
 from wot_web_wtr.tasks import update_user
 
-PATH = os.path.dirname(os.path.abspath(__file__))
+FILES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files")
 
 
 class Banner():
     def __init__(self, userid=None):
         self.userid = userid
-        self.image = Image.open(os.path.join(PATH, "banner.png"))
+        self.image = Image.open(os.path.join(FILES_DIR, "banner.png"))
 
     def draw_caption(self, text, headline=False, color='white', size=None, outline=3, x_offset=2, y_offset=2):
         draw = ImageDraw.Draw(self.image)
         text = str(text)
         if headline:
-            font = ImageFont.truetype(os.path.join(PATH, "Subway-Black.ttf"), size or 20)
+            font = ImageFont.truetype(os.path.join(FILES_DIR, "Subway-Black.ttf"), size or 20)
         else:
-            font = ImageFont.truetype(os.path.join(PATH, "VeraMono.ttf"), size or 14)
+            font = ImageFont.truetype(os.path.join(FILES_DIR, "VeraMono.ttf"), size or 14)
         # Draw the text multiple times in black to get the outline:
         for x in range(1 - outline, outline):
             for y in range(1 - outline, outline):
@@ -45,9 +45,9 @@ class Banner():
 
     def save_png(self):
         if not settings.MEDIA_ROOT:
-            raise ("MEDIAROOT NOT SET")
+            raise Exception("MEDIAROOT NOT SET")
         if not self.userid:
-            raise ("userid NOT SET")
+            raise Exception("userid NOT SET")
         file_path = os.path.join(settings.MEDIA_ROOT, "%s.png" % str(self.userid))
 
         self.image.save(file_path, "PNG", optimize=True)
@@ -142,7 +142,7 @@ def create_image(userid):
 @shared_task
 def create_banner_asset(result, userid):
     if not settings.MEDIA_ROOT:
-        raise ("MEDIAROOT NOT SET")
+        raise Exception("MEDIAROOT NOT SET")
 
     img = create_image(userid)
     img.save_png()

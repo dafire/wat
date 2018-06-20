@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-import os
 import sys
 
 import environ
+import os
 
 env = environ.Env()
 root = environ.Path(__file__) - 2
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'raven.contrib.django.raven_compat',
     'django_celery_beat',
+    'semanticuiforms',
     'wot_ui',
     'wot_user',
     'wat_test',
