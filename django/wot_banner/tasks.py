@@ -1,6 +1,6 @@
+import os
 from collections import defaultdict
 
-import os
 from PIL import Image, ImageDraw, ImageFont
 from celery import shared_task, chord
 from django.conf import settings
@@ -62,24 +62,25 @@ GEFECHTE_X = OFFSET + 110
 
 
 def color_value(typ, value):
-    arr = get_xvm_scale(typ)
-    if arr:
-        l = len(arr)
-        i = 0
-        while i < l and value > arr[i]:
-            i += 1
-        if i < 17:
-            return "#FE0E00"
-        elif i < 34:
-            return "#FE7903"
-        elif i < 53:
-            return "#F8F400"
-        elif i < 76:
-            return "#459300"
-        elif i < 93:
-            return "#02C9B3"
-        else:
-            return "#D042F3"
+    if value:
+        arr = get_xvm_scale(typ)
+        if arr:
+            l = len(arr)
+            i = 0
+            while i < l and value > arr[i]:
+                i += 1
+            if i < 17:
+                return "#FE0E00"
+            elif i < 34:
+                return "#FE7903"
+            elif i < 53:
+                return "#F8F400"
+            elif i < 76:
+                return "#459300"
+            elif i < 93:
+                return "#02C9B3"
+            else:
+                return "#D042F3"
 
     return "white"
 
@@ -150,8 +151,7 @@ def create_banner_asset(result, userid):
 
 @shared_task
 def update_banner(userid):
-    res = chord((update_user.s(userid, day=True),
-                 update_user.s(userid, month=True),
-                 update_user.s(userid, overall=True)),
-                create_banner_asset.s(userid))()
-    print(res.get())
+    chord((update_user.s(userid, day=True),
+           update_user.s(userid, month=True),
+           update_user.s(userid, overall=True)),
+          create_banner_asset.s(userid))()

@@ -1,0 +1,9 @@
+<div style="clear: both; width: 100%">
+<textarea id="{{ uuid }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+</div>
+<script>
+    var simplemde = new SimpleMDE({
+        element: document.getElementById("{{ uuid }}")
+    });
+</script>

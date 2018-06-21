@@ -82,6 +82,8 @@ def players_personal_data(account_id, access_token=None):
 
 def get_clan_details(clan_id, access_token=None):
     data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn")
+    if not clan_id:
+        raise Exception("NO CLAN ID")
     return data.get("data").get(str(clan_id))
 
 

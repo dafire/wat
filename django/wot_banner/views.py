@@ -1,13 +1,15 @@
+import os
 import time
 
-import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
+from django.utils.timezone import now
 from django.views.decorators.cache import cache_control
 
 from wot_api.wot_api import players
 from wot_banner.tasks import create_image, update_banner
+from wot_web_wtr.models import WebWtrRating
 from . import forms
 
 
@@ -20,7 +22,7 @@ def banner_view(request, userid):
     try:
         ftime = os.path.getctime(file_path)
     except FileNotFoundError:
-        return Http404()
+        raise Http404()
 
     response = HttpResponse(content_type="image/png")
     response['X-Accel-Redirect'] = "/media/" + file_name
@@ -63,5 +65,9 @@ def banner_search_view(request):
 
 
 def banner_view_adhoc(request, userid):
-    update_banner(userid)
+    update_needed = not WebWtrRating.objects.filter(account_id=userid,
+                                                    date__gte=now().replace(hour=1, minute=0)).exists()
+    if update_needed:
+        update_banner.delay(userid)
+
     return render(request, "wot_banner/adhoc.html", context={"userid": userid})
