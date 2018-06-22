@@ -1,9 +1,9 @@
-import time
-
 import hashlib
+import time
+from pprint import pprint
+
 from django.conf import settings
 from django.core.cache import cache
-from pprint import pprint
 from requests import post
 
 CACHE_TIME = 60
@@ -81,9 +81,9 @@ def players_personal_data(account_id, access_token=None):
 
 
 def get_clan_details(clan_id, access_token=None):
-    data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn")
     if not clan_id:
         raise Exception("NO CLAN ID")
+    data = get_request("clans", "info", {"clan_id": clan_id}, game="wgn")
     return data.get("data").get(str(clan_id))
 
 
