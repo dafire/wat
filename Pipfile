@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+ipython = "*"
+codecov = "*"
+
+[packages]
+django = "*"
+celery = "*"
+honcho = "*"
+raven = "*"
+requests = "*"
+pillow = "*"
+"psycopg2-binary" = "*"
+django-semanticui-forms = "*"
+django-extensions = "*"
+django-celery-beat = "*"
+django-environ = "*"
+django-redis = "*"
+redis = "*"
+hiredis = "*"
+uwsgi = "*"
+brotlipy = "*"
+whitenoise = "*"
+funcy = "*"
+
+[requires]
+python_version = "3.6"
