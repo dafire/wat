@@ -7,9 +7,9 @@ from urllib.parse import urlencode, quote_plus
 import celery
 from celery.utils.log import get_logger
 from django.conf import settings
+from django.core.signing import TimestampSigner
 from django.urls import reverse
 from django.utils import timezone
-from itsdangerous import TimestampSigner
 
 logger = get_logger(__name__)
 
@@ -26,7 +26,7 @@ def database_backup():
     filename = destination.name[len(tempdir) + 1:]
     logger.info("created backup: %s", filename)
     remove_database_backup.apply_async((destination.name,), countdown=120)
-    s = TimestampSigner(settings.SECRET_KEY)
+    s = TimestampSigner()
     return {
         "browse": "%s?%s" % (
             reverse('wot_admin_tools:download-backup'),

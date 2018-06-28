@@ -7,11 +7,11 @@ from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
+from django.core.signing import TimestampSigner, BadSignature
 from django.http import JsonResponse, HttpResponse, Http404
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
-from itsdangerous import TimestampSigner, BadSignature
 
 from wot_api import tasks
 from wot_api.models import KVStore
@@ -42,7 +42,7 @@ class TaskViewClass(SuperUserRequiredMixin, View):
 
     def get(self, request):
 
-        s = TimestampSigner(settings.SECRET_KEY)
+        s = TimestampSigner()
         task_id = s.unsign(request.GET.get("async"), max_age=30)
         res = AsyncResult(task_id)
 
