@@ -2,8 +2,9 @@ FROM python:3
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
 WORKDIR /code
-ADD requirements.txt /code/
-RUN pip install -r requirements.txt;\
+ADD Pipfile Pipfile.lock /code/
+RUN pip install pipenv;\
+    pipenv install --system --deploy;\
     ln -sf /usr/local/bin/pgcli /usr/local/bin/psql
 ADD config /config/
 ADD django /code/
